@@ -19,8 +19,8 @@
         <selectKey keyProperty="noticeNo" resultType="int" order="BEFORE"  >
             select IFNULL(max(noticeNo),0)+1 from notice
         </selectKey>
-        insert into notice(noticeNo, noticeTitle, noticeContent, regdate)
-        values (#{noticeNo}, #{noticeTitle}, #{noticeContent}, #{regdate})
+        insert into notice(noticeTitle, noticeContent, regdate)
+        values ( #{noticeTitle}, #{noticeContent}, NOW())
     </insert>
 
     <update id="update">

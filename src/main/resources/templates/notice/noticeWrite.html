@@ -10,16 +10,16 @@
 <div class="container">
   <h2>게시판 등록</h2>
   // 사용자가 입력한 내용들을 서버로 전달하기 위해 form 태그 이용. action에는 요청을 수행할 서버의 주소를 입력 -> 아직 만들지 않음.
-  <form id="frm" name="frm" method="post" action="/board/insertBoard.do">
+  <form id="frm" name="frm" method="post" action="/noticeinsert">
   <table class="board_detail">
     <tr>
       <td>제목</td>
-      <td><input type="text" id="title" name="title"></td>
+      <td><input type="text" id="noticeTitle" name="noticeTitle"></td>
       // 입력된 내용들은 name을 키로 이용해 서버에 전송됨
     </tr>
     <tr>
       <td colspan="2">
-        <textarea id="contents" name="contents"></textarea>
+        <textarea id="noticeContent" name="noticeContent"></textarea>
       </td>
     </tr>
   </table>
