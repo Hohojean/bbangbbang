@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 import teamPro.bbangShuttle.config.MybatisConfig;
 
 @SpringBootApplication
-@Import(MybatisConfig.class)
+//@Import(MybatisConfig.class)
 public class BbangShuttleApplication {
 
 	public static void main(String[] args) {

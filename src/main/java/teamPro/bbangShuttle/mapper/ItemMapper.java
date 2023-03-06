@@ -11,7 +11,7 @@ public interface ItemMapper {
 
     List<ItemVO> findAllItem();
 
-    Optional<ItemVO> ItemDetail(ItemVO vo);
+    Optional<ItemVO> ItemDetail(int itemNo);
 
     int save(ItemVO vo);
 

@@ -22,8 +22,8 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public Optional<ItemVO> ItemDetail(ItemVO vo) {
-        return itemmapper.ItemDetail(vo);
+    public Optional<ItemVO> ItemDetail(int itemNo) {
+        return itemmapper.ItemDetail(itemNo);
     }
 
     @Override
