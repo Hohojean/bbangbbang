@@ -1,4 +1,4 @@
 package teamPro.bbangShuttle.service;
 
-public class MemberServiceImpl {
+public class JoinServiceImpl {
 }
