@@ -27,6 +27,7 @@
     </update>
 
     <delete id="delete">
-
+        delete from item
+        where itemNo = #{itemNo}
     </delete>
 </mapper>
