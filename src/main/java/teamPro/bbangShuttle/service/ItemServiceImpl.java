@@ -2,7 +2,6 @@ package teamPro.bbangShuttle.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import teamPro.bbangShuttle.mapper.ItemMapper;
 import teamPro.bbangShuttle.vo.ItemVO;

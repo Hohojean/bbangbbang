@@ -9,10 +9,6 @@ import java.util.Optional;
 
 public interface ItemService {
 
-    /**
-     * @parame 없음
-     * @return 상품 리스트
-     */
     List<ItemVO> findAllItem();
 
     Optional<ItemVO> ItemDetail(int itemNo);

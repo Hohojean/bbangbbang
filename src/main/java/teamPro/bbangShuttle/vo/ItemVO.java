@@ -3,7 +3,7 @@ package teamPro.bbangShuttle.vo;
 import lombok.*;
 
 @Getter @Setter
-@ToString @RequiredArgsConstructor
+@RequiredArgsConstructor
 public class ItemVO {
 
     private int itemNo;
