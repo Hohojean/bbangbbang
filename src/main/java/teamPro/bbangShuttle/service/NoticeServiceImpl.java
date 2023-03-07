@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import teamPro.bbangShuttle.mapper.NoticeMapper;
+import teamPro.bbangShuttle.paging.Criteria;
+import teamPro.bbangShuttle.paging.SearchCriteria;
 import teamPro.bbangShuttle.vo.NoticeVO;
 
 import java.util.List;
@@ -14,6 +16,26 @@ import java.util.List;
 public class NoticeServiceImpl implements NoticeService {
 
   private final NoticeMapper mapper;
+
+  // ** SearchCriteria PageList
+  @Override
+  public List<NoticeVO> searchList(SearchCriteria cri) {
+    return mapper.searchList(cri);
+  }
+  @Override
+  public int searchTotalCount(SearchCriteria cri) {
+    return mapper.searchTotalCount(cri);
+  }
+
+  // ** Criteria PageList
+  @Override
+  public List<NoticeVO> criList(Criteria cri) {
+    return mapper.criList(cri);
+  }
+  @Override
+  public int criTotalCount() {
+    return mapper.criTotalCount();
+  }
 
   // ** selectList
   @Override

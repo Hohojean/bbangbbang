@@ -1,10 +1,20 @@
 package teamPro.bbangShuttle.service;
 
+import teamPro.bbangShuttle.paging.Criteria;
+import teamPro.bbangShuttle.paging.SearchCriteria;
 import teamPro.bbangShuttle.vo.NoticeVO;
 
 import java.util.List;
 
 public interface NoticeService {
+
+  // ** SearchCriteria PageList
+  List<NoticeVO> searchList(SearchCriteria cri);
+  int searchTotalCount(SearchCriteria cri);
+
+  // ** Criteria PageList
+  List<NoticeVO> criList(Criteria cri);
+  int criTotalCount();
 
   // ** selectList
   List<NoticeVO> selectList();

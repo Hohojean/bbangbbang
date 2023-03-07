@@ -2,6 +2,68 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="teamPro.bbangShuttle.mapper.NoticeMapper">
+
+    <!-- ** SearchCriteria PageList
+    => sql Tag : 필요한 sql 구문을 만들어놓고 필요할때마다 사용가능
+    => include Tag : 호출 tag
+              적용 범위 ->  "and 나머지조건 )"
+              where ( seq>0 and 나머지조건 )
+
+    => 조건문 : searchType: title , keyword: Java
+               where title like '%'+#{keyword}+'%'
+               매번 문자열 + 연산 (Concate...함수 사용해야함) 하기는 아래의 예시와 같이 불편
+               그래서 이값을 변수로 처리 -> bind Tag
+               * 예시
+                and title Like  CONCAT('%',CONCAT(#{keyword},'%'))
+                and title Like  '%' || #{keyword} || '%' )
+    -->
+    <sql id="search">
+        <if test="keyword!=null">
+            <bind name="keyVal" value="'%'+keyword+'%'"/>
+        </if>
+        <choose>
+            <when test="searchType=='t'.toString()">
+                and noticeTitle like #{keyVal} )
+            </when>
+            <when test="searchType=='c'.toString()">
+                and noticeContent like #{keyVal} )
+            </when>
+            <when test="searchType=='r'.toString()">
+                and regdate like #{keyVal} )
+            </when>
+            <when test="searchType=='tc'.toString()">
+                and noticeTitle like #{keyVal}
+                or noticeContent like #{keyVal} )
+            </when>
+            <otherwise> )</otherwise>
+        </choose>
+    </sql>
+
+    <select id="searchList" resultType="NoticeVO">
+        select noticeNo, noticeTitle, noticeContent, regdate, cnt
+        from notice
+        where ( noticeNo>0 <include refid="search"></include>
+        limit #{sno}, #{rowsPerPage}
+    </select>
+
+    <select id="searchTotalCount" resultType="int">
+        select count(*) from notice
+        where ( noticeNo>0 <include refid="search"></include>
+    </select>
+
+    <!-- ** Criteria PageList
+        => MySql : limit a , b ( a개 제외하고 a+1 부터 b개 )  적용 -->
+    <select id="criList" resultType="NoticeVO">
+        select noticeNo, noticeTitle, noticeContent, regdate, cnt
+        from board
+            limit #{sno}, #{rowsPerPage}
+    </select>
+    <select id="criTotalCount" resultType="int" >
+        select count(*) from notice
+    </select>
+
+    <!-- CRUD SQL문 -->
+
     <select id="selectList" resultType="NoticeVO">
         <![CDATA[
         SELECT
@@ -12,7 +74,7 @@
     </select>
 
     <select id="selectOne" resultType="NoticeVO">
-        select * from notice where noticeNo=1
+        select * from notice where noticeNo=${noticeNo}
     </select>
 
     <insert id="insert">
@@ -29,7 +91,7 @@
     </update>
 
     <delete id="delete">
-        delete from notice
+        delete from notice where noticeNo=#{noticeNo}
     </delete>
 
     <!-- 조회수 증가 -->

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>** Board CriList Spring_Mybatis **</title>
+  <link rel="stylesheet" type="text/css" href="resources/myLib/myStyle.css" >
+  <script th:src="@{/resources/myLib/jquery-3.2.1.min.js}"></script>
+  <script>
+      $(function(){
+          // 1) SearchType 이 '전체' 면 keyword 클리어
+          $('#searchType').change(function(){
+              if ( $(this).val()=='n' ) $('#keyword').val('');
+          }); //change
+
+          $('#searchBtn').click(function(){
+              self.location='noticepaging'
+                  + [[${pageMaker.makeQuery(1)}]]
+                  + '&searchType='+$('#searchType').val()
+                  + '&keyword='+$('#keyword').val();
+          }); //click
+      }); // ready
+  </script>
+</head>
+<body>
+<h2>** Board CriList **</h2>
+<br>
+<hr>
+<div id="searchBar" th:each="pageMaker : ${pageMaker}">
+  <select name="searchType" id="searchType">
+    <option value="n" th:selected="${pageMaker.cri.searchType == null}">전체</option>
+    <option value="t" th:selected="${pageMaker.cri.searchType == 't'}">Title</option>
+    <option value="c" th:selected="${pageMaker.cri.searchType == 'c'}">Content</option>
+    <option value="r" th:selected="${pageMaker.cri.searchType == 'r'}">RegDate</option>
+    <option value="tc" th:selected="${pageMaker.cri.searchType == 'tc'}">Title or Content</option>
+  </select>
+  <input type="text" name="keyword" id="keyword" th:value="${pageMaker.cri.keyword}">
+  <button id="searchBtn">Search</button>
+</div>
+
+  <table class="board_list">
+    <colgroup>
+      <col width="15%"/>
+      <col width="*"/>
+      <col width="15%"/>
+      <col width="25%"/>
+    </colgroup>
+    <thead>
+    <tr>
+      <th scope="col">글번호</th>
+      <th scope="col">제목</th>
+      <th scope="col">조회수</th>
+      <th scope="col">작성일</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${#lists.size(list)} > 0" th:each="list : ${list}">
+      <td th:text="${list.noticeNo}"></td>
+      <td><a th:href="@{noticedetail?noticeNo=} + ${list.noticeNo}" th:text="${list.noticeTitle}"></a></td>
+      <td th:text="${list.cnt}"></td>
+      <td th:text="${list.regDate}"></td>
+    </tr>
+    <tr th:unless="${#lists.size(list)} > 0">
+      <td colspan="4">조회된 결과가 없습니다.</td>
+    </tr>
+    </tbody>
+  </table>
+<br><hr>
+<div align="center" th:each="pageMaker : ${pageMaker}">
+  <span th:if="${pageMaker.prev && pageMaker.spageNo>1}">
+    <a th:href="@{/noticepaging(query=1)}">FP</a>&nbsp;
+    <a th:href="@{/noticepaging(query=${pageMaker.spageNo-1})}">&lt;</a>&nbsp;&nbsp;
+  </span>
+  <span th:unless="${pageMaker.prev && pageMaker.spageNo>1}">
+    <font color="Gray">FP&nbsp;&lt;&nbsp;&nbsp;</font>
+  </span>
+  <span th:each="i: ${#numbers.sequence(pageMaker.spageNo, pageMaker.epageNo)}">
+    <span th:if="${i==pageMaker.cri.currPage}">
+      <font size="5" color="Orange" th:text="${i}"></font>&nbsp;
+    </span>
+    <span th:unless="${i==pageMaker.cri.currPage}">
+      <a th:href="@{/noticepaging(query=${i})}" th:text="${i}"></a>&nbsp;
+    </span>
+  </span>
+  <span th:if="${pageMaker.next && pageMaker.epageNo>0}">
+    <a th:href="@{/noticepaging(query=${pageMaker.epageNo+1})}">&nbsp;&gt;</a>
+    <a th:href="@{/noticepaging(query=${pageMaker.lastPageNo})}">&nbsp;LP</a>
+  </span>
+  <span th:unless="${pageMaker.next && pageMaker.epageNo>0}">
+    <font color="Gray">&nbsp;&gt;&nbsp;LP</font>
+  </span>
+</div>
+
+</body>
+</html>
