@@ -1,4 +1,4 @@
 package teamPro.bbangShuttle.service;
 
-public interface MemberService {
+public interface JoinService {
 }

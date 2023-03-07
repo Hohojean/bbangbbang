@@ -1,4 +1,4 @@
 package teamPro.bbangShuttle.vo;
 
-public class MemberVO {
+public class JoinVO {
 }
