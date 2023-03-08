@@ -18,13 +18,11 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/itemList")
-    @ResponseBody
     public List<ItemVO> itemList() {
         return itemService.findAllItem();
     }
 
     @GetMapping("/itemDetail/{itemNo}")
-    @ResponseBody
     public Optional<ItemVO> itemDetail(@PathVariable int itemNo) {
         return itemService.ItemDetail(itemNo);
     }
