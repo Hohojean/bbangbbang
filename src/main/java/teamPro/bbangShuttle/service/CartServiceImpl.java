@@ -3,6 +3,7 @@ package teamPro.bbangShuttle.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import teamPro.bbangShuttle.mapper.CartMapper;
 import teamPro.bbangShuttle.vo.CartVO;
 
 import java.util.List;
@@ -11,18 +12,32 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
+    private final CartMapper cartMapper;
+
     @Override
-    public List<CartVO> cartList() {
-        return null;
+    public List<CartVO> cartList(CartVO vo) {
+        return cartMapper.cartList(vo);
+    }
+
+    @Override
+    public CartVO cartItem(CartVO vo) {
+        return cartMapper.cartItem(vo);
     }
 
     @Override
     public int cartSave(CartVO vo) {
-        return 0;
+        return cartMapper.cartSave(vo);
     }
 
     @Override
     public int cartItemCount(CartVO vo) {
-        return 0;
+        return cartMapper.cartItemCount(vo);
     }
+
+    @Override
+    public int cartItemDelete(CartVO vo) {
+        return cartMapper.cartItemDelete(vo);
+    }
+
+
 }
