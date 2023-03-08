@@ -12,22 +12,22 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/bbang")
+@RequestMapping("/item")
 public class ItemController {
 
     private final ItemService itemService;
 
-    @GetMapping("/itemList")
+    @GetMapping("/list")
     public List<ItemVO> itemList() {
         return itemService.findAllItem();
     }
 
-    @GetMapping("/itemDetail/{itemNo}")
+    @GetMapping("/{itemNo}")
     public Optional<ItemVO> itemDetail(@PathVariable int itemNo) {
         return itemService.ItemDetail(itemNo);
     }
 
-    @PostMapping("/itemInsert")
+    @PostMapping("/insert")
     public ModelAndView itemSave(@RequestBody ItemVO vo) {
         ModelAndView mv = new ModelAndView();
         String uri = "redirect:/";
@@ -38,23 +38,23 @@ public class ItemController {
         return mv;
     }
 
-    @PostMapping("/itemDelete")
+    @PostMapping("/delete")
     public ModelAndView itemDelete(@RequestBody ItemVO vo) {
         ModelAndView mv = new ModelAndView();
         String uri = "redirect:/";
         if(itemService.delete(vo) > 0) {
-            uri = "redirect:/bbang/itemList";
+            uri = "redirect:/item/list";
         }
         mv.setViewName(uri);
         return mv;
     }
 
-    @PostMapping("/itemUpdate")
+    @PostMapping("/update")
     public ModelAndView itemUpdate(@RequestBody ItemVO vo) {
         ModelAndView mv = new ModelAndView();
         String uri = "redirect:/";
         if(itemService.update(vo) > 0) {
-            uri = "redirect:/bbang/itemDetail/"+vo.getItemNo();
+            uri = "redirect:/item/"+vo.getItemNo();
         }
         mv.setViewName(uri);
         return mv;

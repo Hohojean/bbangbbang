@@ -10,17 +10,17 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/bbang")
+@RequestMapping("/cart")
 public class CartController {
 
     private final CartService cartService;
 
-    @GetMapping("/cart/{userID}")
+    @GetMapping("/{userID}")
     public List<CartVO> cartList(@PathVariable CartVO userID) {
         return cartService.cartList(userID);
     }
 
-    @PostMapping("/cart")
+    @PostMapping("/list")
     public List<CartVO> cartCount(@RequestBody CartVO vo) {
         CartVO item = cartService.cartItem(vo);
         if(vo.getCartAmount() == 1 && item.getCartAmount() == 1) {
@@ -29,6 +29,16 @@ public class CartController {
             cartService.cartItemCount(vo);
         }
         return cartService.cartList(vo);
+    }
+
+    @PostMapping("/insert")
+    public void cartInsert(@RequestBody CartVO vo) {
+        if(cartService.cartItem(vo) == null) {
+            cartService.cartSave(vo);
+        } else {
+            vo.setCartAmount(vo.getCartAmount()+cartService.cartItem(vo).getCartAmount());
+            cartService.cartItemCount(vo);
+        }
     }
 
 }
