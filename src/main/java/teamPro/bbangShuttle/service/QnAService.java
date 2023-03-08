@@ -18,5 +18,8 @@ public interface QnAService {
   // ** Delete
   int delete(QnAVO vo);
 
+  // ** Reply_Insert
+  int rinsert(QnAVO vo);
+
 
 }

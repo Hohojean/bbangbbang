@@ -3,6 +3,7 @@ package teamPro.bbangShuttle.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -76,6 +77,30 @@ public class QnAController {
     mv.setViewName(uri);
     return mv;
   }
+
+  // 답글 등록 폼
+  @GetMapping("rinsert")
+  public ModelAndView rinsertForm(ModelAndView mv) {
+    mv.setViewName("qna/rinsertForm");
+    return mv;
+  }
+
+  // 답글 등록 기능
+  @PostMapping("reinsert")
+  public ModelAndView rinsert(ModelAndView mv, QnAVO vo, RedirectAttributes rttr) {
+    String uri="redirect:qnalist";
+    vo.setQna_step(vo.getQna_step()+1);
+    vo.setQna_child(vo.getQna_child()+1);
+
+    if ( service.rinsert(vo)>0 ) {
+      rttr.addFlashAttribute("message", "~~ 댓글 등록 성공 ~~");
+    }else {
+      uri="qna/rinsertForm";
+      mv.addObject("message", "~~ 댓글 등록 실패, 다시 하세요 ~~");
+    }
+    mv.setViewName(uri);
+    return mv;
+  } //rinsert
 
 
 }
