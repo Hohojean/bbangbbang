@@ -7,6 +7,7 @@ import teamPro.bbangShuttle.mapper.CartMapper;
 import teamPro.bbangShuttle.mapper.ItemMapper;
 import teamPro.bbangShuttle.mapper.NoticeMapper;
 import teamPro.bbangShuttle.mapper.QnAMapper;
+import teamPro.bbangShuttle.mapper.ReviewMapper;
 import teamPro.bbangShuttle.service.*;
 
 @Configuration
@@ -16,6 +17,7 @@ public class MybatisConfig {
     private final ItemMapper itemMapper;
     private final NoticeMapper noticeMapper;
     private final QnAMapper qnAMapper;
+    private final ReviewMapper reviewMapper;
 
     private final CartMapper cartMapper;
 
@@ -37,5 +39,10 @@ public class MybatisConfig {
     @Bean
     public QnAService qnaService() {
         return new QnAServiceImpl(qnAMapper);
+    }
+
+    @Bean
+    public ReviewService reviewService() {
+        return new ReviewServiceImpl(reviewMapper);
     }
 }

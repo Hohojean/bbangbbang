@@ -5,13 +5,11 @@
 
     <!-- CRUD SQL문 -->
     <select id="selectList" resultType="QnAVO">
-        <![CDATA[
         SELECT
             qnaNo, userID, qnaTitle, qnaContent, qna_root, qna_step, qna_child, regDate
         FROM
             qna
         order by qna_root desc, qna_step asc
-        ]]>
     </select>
 
     <select id="selectOne" resultType="QnAVO">
@@ -28,26 +26,24 @@
 
     <!-- Reply_Insert -->
     <insert id="rinsert">
-        <selectKey keyProperty="seq" resultType="int" order="BEFORE">
-            select IFNULL(max(seq),0)+1 from board
+        <selectKey keyProperty="qnaNo" resultType="int" order="BEFORE">
+            select IFNULL(max(qnaNo),0)+1 from qna
         </selectKey>
-        insert into board(seq,id,title,content,root,step,indent)
-        values(#{seq},#{id},#{title},#{content},#{root},#{step},#{indent})
+        insert into qna(qnaNo,userID,qnaTitle,qnaContent,qna_root,qna_step,qna_child)
+        values(#{qnaNo},#{userID},#{qnaTitle},#{qnaContent},#{qna_root},#{qna_step},#{qna_child})
     </insert>
     <update id="stepUpdate">
-        <selectKey keyProperty="seq" resultType="int" order="BEFORE">
-            select max(seq) from board
+        <selectKey keyProperty="qnaNo" resultType="int" order="BEFORE">
+            select max(qnaNo) from qna
         </selectKey>
-        update board set step=step+1
-        where root=#{root} and step>=#{step} and seq != #{seq}
+        update qna set qna_step=qna_step+1
+        where qna_root=#{qna_root} and qna_step>=#{qna_step} and qnaNo != #{qnaNo}
     </update>
 
     <delete id="delete">
         delete from qna
         <if test="qnaNo==qna_root">where qnaNo=#{qnaNo}</if>
-        <!-- 원글 삭제 : 동일 root 는 모두 삭제 -->
         <if test="qnaNo!=qna_root">where qnaNo=#{qnaNo}</if>
-        <!-- 답글만 삭제 -->
     </delete>
     
 </mapper>
