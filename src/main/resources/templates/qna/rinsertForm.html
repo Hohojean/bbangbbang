@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>board</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"></link>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<form action="rinsert" method="post">
+  <table>
+    <tr height="40"><td bgcolor="hotpink">Title</td>
+      <td><input type="text" name="qnaTitle" placeholder="반드시 입력하세요~~"></td></tr>
+    <tr height="40"><td bgcolor="hotpink">Content</td>
+      <td><textarea rows="5" cols="50" name="qnaContent"></textarea></td>
+    </tr>
+<!--    <tr height="40"><td></td>-->
+<!--      <td><input type="hidden" name="qna_root" th:value="${QnAVO.qna_root}">-->
+<!--        <input type="hidden" name="qna_step" th:value="${QnAVO.qna_step}">-->
+<!--        <input type="hidden" name="qna_child" th:value="${QnAVO.qna_child}">-->
+<!--      </td>-->
+<!--    </tr>-->
+    <tr><td></td>
+      <td><input type="submit" value="등록">&nbsp;&nbsp;
+        <input type="reset" value="취소">
+      </td></tr>
+  </table>
+</form>
+</body>
+</html>

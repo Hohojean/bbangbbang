@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>board</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"></link>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<h2>** Board Update Spring02_MVC2 **</h2>
+<hr>
+<form action="noticeupdate" method="post">
+  <table>
+    <tr height="40"><td bgcolor="MistyRose">Seq</td>
+      <td><input type="text" name="noticeNo" th:value="${apple.noticeNo}" size="20" readonly></td></tr>
+    <!-- 서버에서 필요한 정보 -->
+    <tr height="40"><td bgcolor="MistyRose">글쓴이</td>
+      <td><input type="text" name="id" value="관리자" size="20" readonly></td></tr>
+    <tr height="40"><td bgcolor="MistyRose">Title</td>
+      <td><input type="text" name="noticeTitle" th:value="${apple.noticeTitle}"></td></tr>
+    <!-- 서버에서 필요한 정보 -->
+    <tr height="40"><td bgcolor="MistyRose">Content</td>
+      <td><textarea rows="5" cols="50" name="noticeContent" th:text="${apple.noticeContent}"></textarea></td>
+      <!-- 서버에서 필요한 정보 -->
+    </tr>
+    <tr height="40"><td bgcolor="MistyRose">RegDate</td>
+      <td><input type="text" name="regDate" th:value="${apple.regDate}" readonly></td></tr>
+    <tr height="40"><td bgcolor="MistyRose">조회수</td>
+      <td><input type="text" name="cnt" th:value="${apple.cnt}" size="20" readonly></td></tr>
+    <tr><td></td>
+      <td><input type="submit" value="글수정">&nbsp;&nbsp;
+        <input type="reset" value="취소">
+      </td>
+    </tr>
+  </table>
+</form>
+<hr>
+&nbsp;&nbsp;<a href="noticedelete?noticeNo=${apple.noticeNo}">[글삭제]</a>
+&nbsp;&nbsp;<a href="noticelist">글목록</a>
+&nbsp;&nbsp;<a href="javascript:history.go(-1)" th:text="이전으로"></a>
+&nbsp;&nbsp;<a href="/">홈스윗홈</a>
+</body>
+</html>

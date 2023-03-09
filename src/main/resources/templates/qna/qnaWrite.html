@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>board</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"
+        href="../../css/style.css"></link>
+</head>
+<body>
+<div class="container">
+  <h2>게시판 등록</h2>
+  // 사용자가 입력한 내용들을 서버로 전달하기 위해 form 태그 이용. action에는 요청을 수행할 서버의 주소를 입력 -> 아직 만들지 않음.
+  <form id="frm" name="frm" method="post" action="/qnainsert">
+  <table class="board_detail">
+    <tr>
+      <td>제목</td>
+      <td><input type="text" id="qnaTitle" name="qnaTitle"></td>
+      // 입력된 내용들은 name을 키로 이용해 서버에 전송됨
+    </tr>
+    <tr>
+      <td colspan="2">
+        <textarea id="qnaContent" name="qnaContent"></textarea>
+      </td>
+    </tr>
+  </table>
+  <input type="submit" id="submit" value="저장" class="btn">
+  </form>
+</div>
+</body>
+</html>
