@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="teamPro.bbangShuttle.mapper.ReviewMapper">
+
+    <!-- CRUD SQL문 -->
+    <select id="selectList" resultType="ReviewVO">
+        SELECT
+            reviewNo, userID,itemNo, reviewTitle, reviewContent, regDate,
+            review_root, review_step, review_child, review_star, imgName, cnt
+        FROM
+            review
+        order by review_root desc, review_step asc
+    </select>
+
+    <select id="selectOne" resultType="ReviewVO">
+        select * from review where reviewNo=${reviewNo}
+    </select>
+
+    <insert id="insert">
+        <selectKey keyProperty="reviewNo" resultType="int" order="BEFORE"  >
+            select IFNULL(max(reviewNo),0)+1 from review
+        </selectKey>
+        insert into review(userID, reviewTitle, reviewContent, review_star, regDate)
+        values ( #{userID}, #{reviewTitle}, #{reviewContent}, #{review_star}, NOW())
+    </insert>
+
+    <!-- Reply_Insert -->
+    <insert id="rinsert">
+        <selectKey keyProperty="reviewNo" resultType="int" order="BEFORE">
+            select IFNULL(max(reviewNo),0)+1 from review
+        </selectKey>
+        insert into review(reviewNo,userID,reviewTitle,reviewContent,review_root,review_step,review_child)
+        values(#{reviewNo},#{userID},#{reviewTitle},#{reviewContent},#{review_root},#{review_step},#{review_child})
+    </insert>
+    <update id="stepUpdate">
+        <selectKey keyProperty="reviewNo" resultType="int" order="BEFORE">
+            select max(reviewNo) from review
+        </selectKey>
+        update review set review_step=review_step+1
+        where review_root=#{review_root} and review_step>=#{review_step} and reviewNo != #{reviewNo}
+    </update>
+
+    <update id="update">
+        update notice set noticeTitle=#{noticeTitle}, noticeContent=#{noticeContent}, review_star=#{review_star}
+        where noticeNo=#{noticeNo}
+    </update>
+
+    <delete id="delete">
+        delete from review
+        <if test="reviewNo==review_root">where reviewNo=#{reviewNo}</if>
+        <if test="reviewNo!=review_root">where reviewNo=#{reviewNo}</if>
+    </delete>
+
+</mapper>
