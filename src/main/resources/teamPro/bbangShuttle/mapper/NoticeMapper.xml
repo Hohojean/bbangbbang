@@ -65,12 +65,11 @@
     <!-- CRUD SQL문 -->
 
     <select id="selectList" resultType="NoticeVO">
-        <![CDATA[
+
         SELECT
             noticeNo, noticeTitle, noticeContent, regdate, cnt
         FROM
             notice
-        ]]>
     </select>
 
     <select id="selectOne" resultType="NoticeVO">

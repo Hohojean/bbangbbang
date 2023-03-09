@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="teamPro.bbangShuttle.mapper.QnAMapper">
+
+    <!-- CRUD SQL문 -->
+    <select id="selectList" resultType="QnAVO">
+        SELECT
+            qnaNo, userID, qnaTitle, qnaContent, qna_root, qna_step, qna_child, regDate
+        FROM
+            qna
+        order by qna_root desc, qna_step asc
+    </select>
+
+    <select id="selectOne" resultType="QnAVO">
+        select * from qna where qnaNo=${qnaNo}
+    </select>
+
+    <insert id="insert">
+        <selectKey keyProperty="qnaNo" resultType="int" order="BEFORE"  >
+            select IFNULL(max(qnaNo),0)+1 from qna
+        </selectKey>
+        insert into qna(userID, qnaTitle, qnaContent, regDate)
+        values ( #{userID}, #{qnaTitle}, #{qnaContent}, NOW())
+    </insert>
+
+    <!-- Reply_Insert -->
+    <insert id="rinsert">
+        <selectKey keyProperty="qnaNo" resultType="int" order="BEFORE">
+            select IFNULL(max(qnaNo),0)+1 from qna
+        </selectKey>
+        insert into qna(qnaNo,userID,qnaTitle,qnaContent,qna_root,qna_step,qna_child)
+        values(#{qnaNo},#{userID},#{qnaTitle},#{qnaContent},#{qna_root},#{qna_step},#{qna_child})
+    </insert>
+    <update id="stepUpdate">
+        <selectKey keyProperty="qnaNo" resultType="int" order="BEFORE">
+            select max(qnaNo) from qna
+        </selectKey>
+        update qna set qna_step=qna_step+1
+        where qna_root=#{qna_root} and qna_step>=#{qna_step} and qnaNo != #{qnaNo}
+    </update>
+
+    <delete id="delete">
+        delete from qna
+        <if test="qnaNo==qna_root">where qnaNo=#{qnaNo}</if>
+        <if test="qnaNo!=qna_root">where qnaNo=#{qnaNo}</if>
+    </delete>
+    
+</mapper>

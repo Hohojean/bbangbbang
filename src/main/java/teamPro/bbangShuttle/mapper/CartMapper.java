@@ -7,9 +7,13 @@ import java.util.List;
 
 @Mapper
 public interface CartMapper {
-    List<CartVO> cartList();
+    List<CartVO> cartList(CartVO vo);
+
+    CartVO cartItem(CartVO vo);
 
     int cartSave(CartVO vo);
 
     int cartItemCount(CartVO vo);
+
+    int cartItemDelete(CartVO vo);
 }

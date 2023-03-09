@@ -8,6 +8,7 @@ import teamPro.bbangShuttle.paging.SearchCriteria;
 import teamPro.bbangShuttle.vo.NoticeVO;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 @Repository
@@ -25,7 +26,7 @@ public interface NoticeMapper {
   List<NoticeVO> selectList();
 
   // ** selectOne
-  NoticeVO selectOne(NoticeVO vo);
+  Optional<NoticeVO> selectOne(int noticeNo);
 
   // ** Insert
   int insert(NoticeVO vo);

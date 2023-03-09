@@ -14,6 +14,5 @@ public class NoticeVO {
   private String noticeTitle;
   private String noticeContent;
   private String regDate;
-  private String noticeType;
   private int cnt;
 }

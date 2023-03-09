@@ -36,4 +36,13 @@ public class QnAServiceImpl implements QnAService {
     return mapper.delete(vo);
   }
 
+  // ** Reply_Insert
+  @Override
+  public int rinsert(QnAVO vo) {
+    if ( mapper.rinsert(vo)>0 ) {
+      // stepUpdate
+      System.out.println("** stepUpdate Count => "+mapper.stepUpdate(vo));
+      return 1 ;
+    } else return 0;
+  }
 }
