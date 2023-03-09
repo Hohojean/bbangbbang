@@ -1,14 +1,16 @@
 package teamPro.bbangShuttle.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import teamPro.bbangShuttle.service.ItemService;
+import teamPro.bbangShuttle.service.NoticeService;
 import teamPro.bbangShuttle.vo.ItemVO;
 
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,10 +18,17 @@ import java.util.Optional;
 public class ItemController {
 
     private final ItemService itemService;
+    private final NoticeService noticeService;
 
     @GetMapping("/list")
-    public List<ItemVO> itemList() {
-        return itemService.findAllItem();
+    public String itemList() throws JsonProcessingException {
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("item", itemService.findAllItem());
+        objectMap.put("notice", noticeService.selectList());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(objectMap);
+        return json;
     }
 
     @GetMapping("/{itemNo}")
@@ -39,7 +48,7 @@ public class ItemController {
     }
 
     @PostMapping("/delete")
-    public ModelAndView itemDelete(@RequestBody ItemVO vo) {
+    public ModelAndView itemDelete( ItemVO vo) {
         ModelAndView mv = new ModelAndView();
         String uri = "redirect:/";
         if(itemService.delete(vo) > 0) {

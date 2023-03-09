@@ -2,7 +2,6 @@ package teamPro.bbangShuttle.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import teamPro.bbangShuttle.service.CartService;
 import teamPro.bbangShuttle.vo.CartVO;
 
@@ -32,13 +31,15 @@ public class CartController {
     }
 
     @PostMapping("/insert")
-    public void cartInsert(@RequestBody CartVO vo) {
+    public List<CartVO> cartInsert(@RequestBody CartVO vo) {
         if(cartService.cartItem(vo) == null) {
             cartService.cartSave(vo);
         } else {
             vo.setCartAmount(vo.getCartAmount()+cartService.cartItem(vo).getCartAmount());
             cartService.cartItemCount(vo);
         }
+
+        return cartService.cartList(vo);
     }
 
 }
