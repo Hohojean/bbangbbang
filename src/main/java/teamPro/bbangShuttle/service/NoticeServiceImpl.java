@@ -9,6 +9,7 @@ import teamPro.bbangShuttle.paging.SearchCriteria;
 import teamPro.bbangShuttle.vo.NoticeVO;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Primary
@@ -44,8 +45,8 @@ public class NoticeServiceImpl implements NoticeService {
   }
   // ** selectOne
   @Override
-  public NoticeVO selectOne(NoticeVO vo) {
-    return mapper.selectOne(vo);
+  public Optional<NoticeVO> selectOne(int noticeNo) {
+    return mapper.selectOne(noticeNo);
   }
   // ** Insert
   @Override
