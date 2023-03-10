@@ -1,16 +1,15 @@
 package teamPro.bbangShuttle.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import teamPro.bbangShuttle.service.ItemService;
-import teamPro.bbangShuttle.service.NoticeService;
 import teamPro.bbangShuttle.vo.ItemVO;
 
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,55 +17,50 @@ import java.util.*;
 public class ItemController {
 
     private final ItemService itemService;
-    private final NoticeService noticeService;
 
     @GetMapping("/list")
-    public String itemList() throws JsonProcessingException {
-        Map<String, Object> objectMap = new HashMap<>();
-        objectMap.put("item", itemService.findAllItem());
-        objectMap.put("notice", noticeService.selectList());
+    public Map<String, Object> itemList() throws JsonProcessingException {
+        Map<String, Object> result = new ConcurrentHashMap<>();
+        result.put("item", itemService.findAllItem());
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(objectMap);
-        return json;
+        return result;
     }
 
     @GetMapping("/{itemNo}")
-    public Optional<ItemVO> itemDetail(@PathVariable int itemNo) {
-        return itemService.ItemDetail(itemNo);
+    public Map<String, Object> itemDetail(@PathVariable int itemNo) {
+        Map<String, Object> result = new ConcurrentHashMap<>();
+        result.put("item", itemService.ItemDetail(itemNo));
+
+        return result;
     }
 
     @PostMapping("/insert")
-    public ModelAndView itemSave(@RequestBody ItemVO vo) {
-        ModelAndView mv = new ModelAndView();
-        String uri = "redirect:/";
+    public Map<String, Object> itemSave(@RequestBody ItemVO vo) {
+        Map<String, Object> result = new ConcurrentHashMap<>();
         if(itemService.save(vo) > 0) {
-            uri = "redirect:/bbang/itemList";
+            result.put("item", itemService.findAllItem());
         }
-        mv.setViewName(uri);
-        return mv;
+
+        return result;
     }
 
     @PostMapping("/delete")
-    public ModelAndView itemDelete( ItemVO vo) {
-        ModelAndView mv = new ModelAndView();
-        String uri = "redirect:/";
+    public Map<String, Object> itemDelete(@RequestBody ItemVO vo) {
+        Map<String, Object> result = new ConcurrentHashMap<>();
         if(itemService.delete(vo) > 0) {
-            uri = "redirect:/item/list";
+            result.put("item", itemService.findAllItem());
         }
-        mv.setViewName(uri);
-        return mv;
+
+        return result;
     }
 
     @PostMapping("/update")
-    public ModelAndView itemUpdate(@RequestBody ItemVO vo) {
-        ModelAndView mv = new ModelAndView();
-        String uri = "redirect:/";
+    public Map<String, Object> itemUpdate(@RequestBody ItemVO vo) {
+        Map<String, Object> result = new ConcurrentHashMap<>();
         if(itemService.update(vo) > 0) {
-            uri = "redirect:/item/"+vo.getItemNo();
+            result.put("item", itemService.findAllItem());
         }
-        mv.setViewName(uri);
-        return mv;
-    }
 
+        return result;
+    }
 }

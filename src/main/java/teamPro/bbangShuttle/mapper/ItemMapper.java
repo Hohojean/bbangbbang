@@ -1,5 +1,6 @@
 package teamPro.bbangShuttle.mapper;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.ibatis.annotations.Mapper;
 import teamPro.bbangShuttle.vo.ItemVO;
 
@@ -18,4 +19,5 @@ public interface ItemMapper {
     int update(ItemVO vo);
 
     int delete(ItemVO vo);
+
 }
