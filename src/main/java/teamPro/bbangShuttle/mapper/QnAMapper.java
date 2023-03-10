@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import teamPro.bbangShuttle.vo.QnAVO;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 @Repository
@@ -13,13 +14,13 @@ public interface QnAMapper {
   List<QnAVO> selectList();
 
   // ** selectOne
-  QnAVO selectOne(QnAVO vo);
+  Optional<QnAVO> selectOne(int qnaNo);
 
   // ** Insert
   int insert(QnAVO vo);
 
   // ** Delete
-  int delete(QnAVO vo);
+  int delete(int qnaNo);
 
   int rinsert(QnAVO vo);
   int stepUpdate(QnAVO vo);

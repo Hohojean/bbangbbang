@@ -44,12 +44,9 @@ public class NoticeController {
 
   // 작성 게시글 등록(C)
   @PostMapping("noticeinsert")		// html의 form 태그 action에서 입력한 주소
-  public ModelAndView noticeInsert(@RequestBody NoticeVO vo) {
-    ModelAndView mv = new ModelAndView();
-    String uri="redirect:noticelist";
-    if ( service.insert(vo) < 0 ) uri="notice/noticeWrite" ;
-    mv.setViewName(uri);
-    return mv;
+  public List<NoticeVO> noticeInsert(@ModelAttribute NoticeVO vo) {
+    service.insert(vo);
+    return service.selectList();
   }
 
   // 게시글 리스트 보기(R)
@@ -60,31 +57,23 @@ public class NoticeController {
 
   // 게시글 상세보기(R)
   @GetMapping("noticedetail/{noticeNo}")
-  public Optional<NoticeVO> noticeDetail(@PathVariable int noticeNo) {
+  public Optional<NoticeVO> noticeDetail(@PathVariable int noticeNo, NoticeVO vo) {
+    if (service.countUp(vo)>0) vo.setCnt(vo.getCnt()+1); // 조회수 증가
     return  service.selectOne(noticeNo);
   }
 
   // 게시글 수정(U)
-  @PostMapping("noticeupdate")
-  public ModelAndView noticeUpdate(@RequestBody  NoticeVO vo) {
-    ModelAndView mv = new ModelAndView();
-    String uri="redirect:noticedetail?noticeNo="+vo.getNoticeNo();
-    if ( service.update(vo)< 0 ) {
-      uri="notice/noticeUpdate" ;
-    }
-    mv.setViewName(uri);
-    return mv;
+  @PostMapping("noticeupdate/{noticeNo}")
+  public Optional<NoticeVO> noticeUpdate(@PathVariable int noticeNo, @RequestBody  NoticeVO vo) {
+    service.update(noticeNo, vo);
+    return service.selectOne(noticeNo);
   }
 
   // 게시글 삭제(D)
-  @GetMapping("noticedelete")
-  public ModelAndView noticeDelete(@RequestBody NoticeVO vo) {
-    ModelAndView mv = new ModelAndView();
-    String uri="redirect:noticelist";
-    if ( service.delete(vo)<0 ) {
-      uri="redirect:noticedetail?noticeNo="+vo.getNoticeNo();
-    }
-    mv.setViewName(uri);
-    return mv;
+  @DeleteMapping("noticedetail/{noticeNo}")
+  public void noticeDelete(@PathVariable int noticeNo) {
+    service.delete(noticeNo);
+//        return null;
+//     return service.selectList();
   }
 }

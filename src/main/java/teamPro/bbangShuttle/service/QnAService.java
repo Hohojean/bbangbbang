@@ -3,23 +3,21 @@ package teamPro.bbangShuttle.service;
 import teamPro.bbangShuttle.vo.QnAVO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface QnAService {
-
   // ** selectList
   List<QnAVO> selectList();
 
   // ** selectOne
-  QnAVO selectOne(QnAVO vo);
+  Optional<QnAVO> selectOne(int qnaNo);
 
   // ** Insert
   int insert(QnAVO vo);
 
   // ** Delete
-  int delete(QnAVO vo);
+  int delete(int qnaNo);
 
-  // ** Reply_Insert
   int rinsert(QnAVO vo);
-
 
 }

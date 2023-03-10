@@ -55,13 +55,13 @@ public class NoticeServiceImpl implements NoticeService {
   }
   // ** Update
   @Override
-  public int update(NoticeVO vo) {
-    return mapper.update(vo);
+  public int update(int noticeNo, NoticeVO vo) {
+    return mapper.update(noticeNo, vo);
   }
   // ** Delete
   @Override
-  public int delete(NoticeVO vo) {
-    return mapper.delete(vo);
+  public int delete(int noticeNo) {
+    return mapper.delete(noticeNo);
   }
   // ** 조회수 증가
   @Override

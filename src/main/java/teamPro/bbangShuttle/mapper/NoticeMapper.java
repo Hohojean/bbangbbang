@@ -32,10 +32,10 @@ public interface NoticeMapper {
   int insert(NoticeVO vo);
 
   // ** Update
-  int update(NoticeVO vo);
+  int update(int noticeNo, NoticeVO vo);
 
   // ** Delete
-  int delete(NoticeVO vo);
+  int delete(int noticeNo);
 
   // ** 조회수 증가
   int countUp(NoticeVO vo);

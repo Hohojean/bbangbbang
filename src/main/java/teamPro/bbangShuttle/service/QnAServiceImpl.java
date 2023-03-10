@@ -7,6 +7,8 @@ import teamPro.bbangShuttle.mapper.QnAMapper;
 import teamPro.bbangShuttle.vo.QnAVO;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 @Primary
 @RequiredArgsConstructor
@@ -21,8 +23,8 @@ public class QnAServiceImpl implements QnAService {
   }
   // ** selectOne
   @Override
-  public QnAVO selectOne(QnAVO vo) {
-    return mapper.selectOne(vo);
+  public Optional<QnAVO> selectOne(int qnaNo) {
+    return mapper.selectOne(qnaNo);
   }
   // ** Insert
   @Override
@@ -32,8 +34,8 @@ public class QnAServiceImpl implements QnAService {
 
   // ** Delete
   @Override
-  public int delete(QnAVO vo) {
-    return mapper.delete(vo);
+  public int delete(int qnaNo) {
+    return mapper.delete(qnaNo);
   }
 
   // ** Reply_Insert
