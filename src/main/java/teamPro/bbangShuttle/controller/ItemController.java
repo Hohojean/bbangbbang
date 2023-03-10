@@ -3,7 +3,6 @@ package teamPro.bbangShuttle.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import teamPro.bbangShuttle.service.ItemService;
 import teamPro.bbangShuttle.vo.ItemVO;
 
@@ -18,7 +17,7 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    @GetMapping("/list")
+    @GetMapping
     public Map<String, Object> itemList() throws JsonProcessingException {
         Map<String, Object> result = new ConcurrentHashMap<>();
         result.put("item", itemService.findAllItem());
@@ -34,7 +33,7 @@ public class ItemController {
         return result;
     }
 
-    @PostMapping("/insert")
+    @PutMapping
     public Map<String, Object> itemSave(@RequestBody ItemVO vo) {
         Map<String, Object> result = new ConcurrentHashMap<>();
         if(itemService.save(vo) > 0) {
@@ -44,7 +43,7 @@ public class ItemController {
         return result;
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping
     public Map<String, Object> itemDelete(@RequestBody ItemVO vo) {
         Map<String, Object> result = new ConcurrentHashMap<>();
         if(itemService.delete(vo) > 0) {
@@ -54,7 +53,7 @@ public class ItemController {
         return result;
     }
 
-    @PostMapping("/update")
+    @PatchMapping
     public Map<String, Object> itemUpdate(@RequestBody ItemVO vo) {
         Map<String, Object> result = new ConcurrentHashMap<>();
         if(itemService.update(vo) > 0) {

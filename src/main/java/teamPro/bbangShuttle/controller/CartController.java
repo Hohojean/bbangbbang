@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import teamPro.bbangShuttle.service.CartService;
 import teamPro.bbangShuttle.vo.CartVO;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,7 +22,7 @@ public class CartController {
         return result;
     }
 
-    @PostMapping("/count")
+    @PatchMapping
     public Map<String, Object> cartCount(@RequestBody CartVO vo) {
         Map<String, Object> result = new ConcurrentHashMap<>();
         CartVO item = cartService.cartItem(vo);
@@ -36,7 +35,7 @@ public class CartController {
         return result;
     }
 
-    @PostMapping("/insert")
+    @PutMapping
     public Map<String, Object> cartInsert(@RequestBody CartVO vo) {
         Map<String, Object> result = new ConcurrentHashMap<>();
         if(cartService.cartItem(vo) == null) {
