@@ -22,13 +22,13 @@ public interface NoticeService {
   List<NoticeVO> selectList();
 
   // ** selectOne
-  Optional<NoticeVO> selectOne(int noticeNo);
+  NoticeVO selectOne(NoticeVO vo);
 
   // ** Insert
   int insert(NoticeVO vo);
 
   // ** Update
-  int update(int noticeNo, NoticeVO vo);
+  int update(NoticeVO vo);
 
   // ** Delete
   int delete(int noticeNo);

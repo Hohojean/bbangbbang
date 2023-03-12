@@ -14,7 +14,7 @@ public interface QnAMapper {
   List<QnAVO> selectList();
 
   // ** selectOne
-  Optional<QnAVO> selectOne(int qnaNo);
+  QnAVO selectOne(QnAVO vo);
 
   // ** Insert
   int insert(QnAVO vo);

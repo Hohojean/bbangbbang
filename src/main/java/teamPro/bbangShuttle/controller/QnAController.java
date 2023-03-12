@@ -36,8 +36,8 @@ public class QnAController {
 
   // 게시글 상세보기(R)
   @GetMapping("qnadetail/{qnaNo}")
-  public Optional<QnAVO> qnaDetail(@PathVariable int qnaNo) {
-    return  service.selectOne(qnaNo);
+  public QnAVO qnaDetail(@RequestBody QnAVO vo) {
+    return  service.selectOne(vo);
   }
 
   // 게시글 삭제(D)

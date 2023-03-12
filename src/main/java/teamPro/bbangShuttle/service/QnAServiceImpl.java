@@ -23,8 +23,8 @@ public class QnAServiceImpl implements QnAService {
   }
   // ** selectOne
   @Override
-  public Optional<QnAVO> selectOne(int qnaNo) {
-    return mapper.selectOne(qnaNo);
+  public QnAVO selectOne(QnAVO vo) {
+    return mapper.selectOne(vo);
   }
   // ** Insert
   @Override

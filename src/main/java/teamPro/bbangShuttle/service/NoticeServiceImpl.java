@@ -45,8 +45,8 @@ public class NoticeServiceImpl implements NoticeService {
   }
   // ** selectOne
   @Override
-  public Optional<NoticeVO> selectOne(int noticeNo) {
-    return mapper.selectOne(noticeNo);
+  public NoticeVO selectOne(NoticeVO vo) {
+    return mapper.selectOne(vo);
   }
   // ** Insert
   @Override
@@ -55,8 +55,8 @@ public class NoticeServiceImpl implements NoticeService {
   }
   // ** Update
   @Override
-  public int update(int noticeNo, NoticeVO vo) {
-    return mapper.update(noticeNo, vo);
+  public int update(NoticeVO vo) {
+    return mapper.update(vo);
   }
   // ** Delete
   @Override
