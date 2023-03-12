@@ -1,19 +1,17 @@
 package teamPro.bbangShuttle.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import teamPro.bbangShuttle.dto.NoticeDTO;
-import teamPro.bbangShuttle.dto.ResponseDTO;
 import teamPro.bbangShuttle.service.NoticeService;
 
 import teamPro.bbangShuttle.vo.NoticeVO;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 @Log4j2
 @RestController
@@ -67,6 +65,7 @@ public class NoticeController {
       NoticeDTO<NoticeVO> response = NoticeDTO.<NoticeVO>builder()
           .noticeOne(service.selectOne(vo))
           .build();
+      if (service.countUp(vo)>0) vo.setCnt(vo.getCnt()+1); // 조회수 증가
       return ResponseEntity.ok().body(response);
     } catch (Exception e) {
       log.info("** insert  => Exception "+e.getMessage());
@@ -79,7 +78,7 @@ public class NoticeController {
 
   // 게시글 수정(U) - 관리자 권한
   @PutMapping("/{noticeNo}")
-  public ResponseEntity<?> noticeUpdate(@RequestBody  NoticeVO vo) {
+  public ResponseEntity<?> noticeUpdate(@RequestBody NoticeVO vo) {
     try {
       service.update(vo);
       NoticeDTO<NoticeVO> response = NoticeDTO.<NoticeVO>builder()

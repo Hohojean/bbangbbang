@@ -20,8 +20,8 @@
         <selectKey keyProperty="qnaNo" resultType="int" order="BEFORE"  >
             select IFNULL(max(qnaNo),0)+1 from qna
         </selectKey>
-        insert into qna(userID, qnaTitle, qnaContent, regDate)
-        values ( #{userID}, #{qnaTitle}, #{qnaContent}, NOW())
+        insert into qna(qnaNo, userID, qnaTitle, qnaContent, regDate, qna_root)
+        values (#{qnaNo}, #{userID}, #{qnaTitle}, #{qnaContent}, NOW(), #{qnaNo})
     </insert>
 
     <!-- Reply_Insert -->
@@ -30,7 +30,7 @@
             select IFNULL(max(qnaNo),0)+1 from qna
         </selectKey>
         insert into qna(qnaNo,userID,qnaTitle,qnaContent,qna_root,qna_step,qna_child)
-        values(#{qnaNo},#{userID},#{qnaTitle},#{qnaContent},#{qna_root},#{qna_step}+1,#{qna_child}+1)
+        values(#{qnaNo},#{userID},#{qnaTitle},#{qnaContent},#{qna_root},#{qna_step},#{qna_child})
     </insert>
     <update id="stepUpdate">
         <selectKey keyProperty="qnaNo" resultType="int" order="BEFORE">
@@ -42,7 +42,7 @@
 
     <delete id="delete">
         delete from qna
-        <if test="qnaNo==qna_root">where qnaNo=#{qnaNo}</if>
+        <if test="qnaNo==qna_root">where qna_root=#{qnaNo}</if>
         <if test="qnaNo!=qna_root">where qnaNo=#{qnaNo}</if>
     </delete>
     

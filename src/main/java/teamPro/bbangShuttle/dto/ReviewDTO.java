@@ -2,6 +2,7 @@ package teamPro.bbangShuttle.dto;
 
 import lombok.*;
 import teamPro.bbangShuttle.vo.NoticeVO;
+import teamPro.bbangShuttle.vo.ReviewVO;
 
 import java.util.List;
 
@@ -11,10 +12,9 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class NoticeDTO<T> {
+public class ReviewDTO<T> {
 
   private String error;
-  private List<T> noticeList;
-  private NoticeVO noticeOne;
-
+  private List<T> reviewList;
+  private ReviewVO reviewOne;
 }
