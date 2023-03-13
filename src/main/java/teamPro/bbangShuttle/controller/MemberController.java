@@ -1,20 +1,22 @@
 package teamPro.bbangShuttle.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import teamPro.bbangShuttle.dto.ResponseDTO;
 import teamPro.bbangShuttle.dto.UserDTO;
 import teamPro.bbangShuttle.security.TokenProvider;
 import teamPro.bbangShuttle.service.MemberService;
 import teamPro.bbangShuttle.vo.MemberVO;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Log4j2
@@ -25,39 +27,6 @@ public class MemberController {
   private final MemberService service;
   private final TokenProvider tokenProvider;
   private final PasswordEncoder passwordEncoder;
-
-
-//  @PostMapping("/signup")
-//  public ResponseEntity<?> registerUser(@RequestBody MemberVO vo) {
-//    // => insert 성공 : status OK & vo return
-//    //           오류 : status Error & ResponseDTO 이용 Exception_Message
-//    log.info("** registerUser 전송된 vo 확인 => " + vo);
-//
-//    // ** Form 에 정의하지 않은 컬럼값 추가
-//    vo.setUserID("aa");
-//    vo.setUserName("그린컴퓨터");
-//    vo.setUserEmail("aa@naver.com");
-//    vo.setUserPwd("12345!");
-//    vo.setUserPhone("010-1234-5678");
-//    vo.setUserAddr("경기도 성남시 분당구");
-//    vo.setUserBirth("2002-02-02");
-//    vo.setUserGender("남과여");
-//
-//    // ** Password_Encoding
-//    vo.setUserPwd(passwordEncoder.encode(vo.getUserPwd()));
-//
-//    try {
-//      service.insert(vo);
-//      return ResponseEntity.ok().body(vo);
-//    } catch (Exception e) {
-//      log.info("** registerUser  => Exception " + e.toString());
-//      // 예외가 나는 경우 bad 리스폰스 리턴.
-//      ResponseDTO response = ResponseDTO.builder()
-//          .error(e.getMessage())
-//          .build();
-//      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-//    } //try_catch
-//  } //signup
 
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@RequestBody MemberVO vo) {
@@ -116,10 +85,9 @@ public class MemberController {
       final String token = tokenProvider.create(vo);
       final UserDTO userDTO = UserDTO.builder()
           .token(token)
-          .id(vo.getUserID())
-          .username(vo.getUserName())
           .build();
       System.out.println("22222성공 userDTO=" + userDTO);
+      System.out.println("userDTO = " + userDTO);
       return ResponseEntity.ok().body(userDTO);
     } else {
       // 로그인 실패 (id, pssword 오류 구분하지 않음)
@@ -133,10 +101,70 @@ public class MemberController {
     }
   }//authenticate
 
-  @GetMapping("/list")
-    public List<MemberVO> list() {
-    return service.selectList();
+
+  @PostMapping("/logout")
+  public UsernamePasswordAuthenticationToken logout(HttpServletRequest request) {
+//    String token = getTokenFromRequest(request);
+//    if (token == null) {
+//      return ResponseEntity.badRequest().build();
+//    }
+//    boolean result = tokenProvider.invalidateToken(token);
+//    if (result) {
+//      return ResponseEntity.ok().build();
+//    } else {
+//      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//    }
+    SecurityContextHolder.clearContext();
+    System.out.println(getTokenFromRequest(request));
+    return new UsernamePasswordAuthenticationToken(null, null);
+  }// loginOut
+
+  private String getTokenFromRequest(HttpServletRequest request) {
+    String bearerToken = request.getHeader("Authorization");
+    if (!StringUtils.isEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
+      return bearerToken.substring(7);
     }
+    return null;
+  }
+
+  @GetMapping("/list")
+  public List<MemberVO> list() {
+    return service.selectList();
+  } // MemberList
+
+  @PatchMapping
+  public ResponseEntity<?> update(@RequestBody MemberVO vo) {
+    try {
+      vo.setUserPwd(passwordEncoder.encode(vo.getUserPwd()));
+      service.update(vo);
+      return ResponseEntity.ok().build();
+    } catch (Exception e) {
+      log.error("Failed to update user with id {}", e);
+      ResponseDTO response = ResponseDTO.builder()
+          .error(e.getMessage())
+          .build();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+  } // Update
+
+  @DeleteMapping
+  public ResponseEntity<?> delete(@RequestBody MemberVO vo) {
+    try {
+      final String token = tokenProvider.create(vo);
+      String aa = tokenProvider.validateAndGetUserId(token);
+      if(aa == "admin" || aa == vo.getUserID()) {
+        service.delete(vo);
+      }
+      System.out.println(aa);
+      return ResponseEntity.ok().build();
+    } catch (Exception e) {
+      log.error("Failed to delete user with id {}", vo, e);
+      ResponseDTO response = ResponseDTO.builder()
+          .error(e.getMessage())
+          .build();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+  } // Delete
 
 
 }

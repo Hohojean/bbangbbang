@@ -18,7 +18,7 @@ public interface MemberMapper {
 
   MemberVO selectOne(MemberVO vo);
 
-  MemberVO update(MemberVO vo);
+  int update(MemberVO vo);
 
-  MemberVO delete(MemberVO vo);
+  int delete(MemberVO vo);
 }

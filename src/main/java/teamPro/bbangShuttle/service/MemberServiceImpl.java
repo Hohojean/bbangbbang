@@ -1,7 +1,6 @@
 package teamPro.bbangShuttle.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import teamPro.bbangShuttle.mapper.MemberMapper;
 import teamPro.bbangShuttle.vo.MemberVO;
@@ -30,11 +29,11 @@ public class MemberServiceImpl implements MemberService {
 
   @Override
   public int update(MemberVO vo) {
-    return 0;
+    return memberMapper.update(vo);
   }
 
   @Override
   public int delete(MemberVO vo) {
-    return 0;
+    return memberMapper.delete(vo);
   }
 }

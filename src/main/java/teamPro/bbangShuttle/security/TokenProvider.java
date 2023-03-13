@@ -1,6 +1,7 @@
 package teamPro.bbangShuttle.security;
 
 import com.fasterxml.classmate.AnnotationOverrides;
+import io.jsonwebtoken.JwtException;
 import org.springframework.stereotype.Service;
 import teamPro.bbangShuttle.vo.MemberVO;
 
@@ -48,5 +49,16 @@ public class TokenProvider {
         .getBody();
 
     return claims.getSubject();
+  }
+
+  // JWT Token 폐기
+  public boolean invalidateToken(String token) {
+    try {
+      // parseClaimsJws 메서드가 예외를 던지지 않으면 해당 토큰이 유효하다는 뜻
+      Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+      return true; // 토큰이 유효한 경우 true를 반환
+    } catch (JwtException e) {
+      return false; // 토큰이 유효하지 않은 경우 false를 반환
+    }
   }
 }
