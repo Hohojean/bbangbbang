@@ -19,13 +19,12 @@ import java.util.List;
 
 @Log4j2
 @RestController
-@AllArgsConstructor
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class MemberController {
-  private MemberService service;
-  private TokenProvider tokenProvider;
-  private PasswordEncoder passwordEncoder;
+  private final MemberService service;
+  private final TokenProvider tokenProvider;
+  private final PasswordEncoder passwordEncoder;
 
 
 //  @PostMapping("/signup")

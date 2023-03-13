@@ -18,4 +18,7 @@ public interface MemberMapper {
 
   MemberVO selectOne(MemberVO vo);
 
+  MemberVO update(MemberVO vo);
+
+  MemberVO delete(MemberVO vo);
 }

@@ -11,10 +11,14 @@
         select * from user where userID=#{userID}
     </select>
 
+    <update id="update">
+        update user set userName=#{userName}, userEmail=#{userEmail},
+                          userPwd=#{userPwd}, userPhone=#{userPhone}, userAddr=#{userAddr}, userBirth=#{userBirth},
+                          userGender=#{userGender} where userID=#{userID}
+    </update>
 
-<!--    <insert id="insertUser">-->
-<!--        insert into user values( #{userID},#{userName},#{userEmail},#{userPwd},-->
-<!--                                   #{userPhone},#{userAddr},#{userBirth},#{userGender} )-->
-<!--    </insert>-->
+    <delete id="delete">
+        delete from user where userID=#{userID}
+    </delete>
 
 </mapper>
