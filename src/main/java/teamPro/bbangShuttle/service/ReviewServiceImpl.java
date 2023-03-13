@@ -20,6 +20,10 @@ public class ReviewServiceImpl implements ReviewService {
   public List<ReviewVO> selectList() {
     return mapper.selectList();
   }
+  @Override
+  public List<ReviewVO> itemReviewList() {
+    return mapper.itemReviewList();
+  }
   // ** selectOne
   @Override
   public ReviewVO selectOne(ReviewVO vo) {

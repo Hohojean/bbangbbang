@@ -74,7 +74,7 @@ public class SecurityConfig {
         .cors().and() // // WebMvcConfig에서 이미 설정했으므로 기본 cors 설정.
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
         // => session 기반이 아님을 선언
-        .authorizeRequests().antMatchers("/**", "/auth/**", "/resources/**", "/home", "/users/**").permitAll()
+        .authorizeRequests().antMatchers("/", "/auth/**", "/resources/**", "/home", "/users/**","/item", "/notices/**", "/qnas/**", "/reviews/**").permitAll()
         // => "/", "/auth/**", "/home", "/member/**" 경로는 인증 안해도 됨.
         .anyRequest().authenticated().and()
         // => "/", "/auth/**", "/home", "/member/**"  이외의 모든 경로는 인증 해야됨.
