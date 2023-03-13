@@ -21,8 +21,8 @@ public class ReviewServiceImpl implements ReviewService {
     return mapper.selectList();
   }
   @Override
-  public List<ReviewVO> itemReviewList() {
-    return mapper.itemReviewList();
+  public List<ReviewVO> itemReviewList(int itemNo) {
+    return mapper.itemReviewList(itemNo);
   }
   // ** selectOne
   @Override

@@ -11,7 +11,7 @@ import java.util.List;
 public interface ReviewMapper {
   // ** selectList
   List<ReviewVO> selectList();
-  List<ReviewVO> itemReviewList();
+  List<ReviewVO> itemReviewList(int itemNo);
 
 
   // ** selectOne

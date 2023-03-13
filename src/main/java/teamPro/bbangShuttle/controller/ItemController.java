@@ -1,12 +1,15 @@
 package teamPro.bbangShuttle.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import teamPro.bbangShuttle.service.ItemService;
+import teamPro.bbangShuttle.service.ReviewService;
 import teamPro.bbangShuttle.vo.ItemVO;
 
 
+import java.security.Security;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,13 +19,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ItemController {
 
     private final ItemService itemService;
+    private final ReviewService reviewService;
 
     @GetMapping
-    public Map<String, Object> itemList() throws JsonProcessingException {
+    public Map<String, Object> itemList(){
         Map<String, Object> result = new ConcurrentHashMap<>();
         result.put("item", itemService.findAllItem());
 
 
+        SecurityContextHolder.getContext().getAuthentication().getCredentials();
         return result;
     }
 
@@ -30,6 +35,7 @@ public class ItemController {
     public Map<String, Object> itemDetail(@PathVariable int itemNo) {
         Map<String, Object> result = new ConcurrentHashMap<>();
         result.put("item", itemService.ItemDetail(itemNo));
+        result.put("review",reviewService.itemReviewList(itemNo));
 
         return result;
     }
