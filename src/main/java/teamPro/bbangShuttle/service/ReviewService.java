@@ -8,6 +8,7 @@ public interface ReviewService {
 
   // ** selectList
   List<ReviewVO> selectList();
+  List<ReviewVO> itemReviewList();
 
   // ** selectOne
   ReviewVO selectOne(ReviewVO vo);

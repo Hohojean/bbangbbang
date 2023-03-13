@@ -89,6 +89,7 @@ public class QnAController {
   // 답글 등록 기능 - 관리자 권한
   @PostMapping("/rinsert")
   public ResponseEntity<?> qnarInsert(@RequestBody QnAVO vo) {
+      vo.setQna_root(vo.getQnaNo());
       vo.setQna_step(vo.getQna_step()+1);
       vo.setQna_child(vo.getQna_child()+1);
     try {
