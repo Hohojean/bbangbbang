@@ -20,6 +20,10 @@ public class QnAServiceImpl implements QnAService {
   public List<QnAVO> selectList() {
     return mapper.selectList();
   }
+  @Override
+  public List<QnAVO> idList() {
+    return mapper.idList();
+  }
   // ** selectOne
   @Override
   public QnAVO selectOne(QnAVO vo) {

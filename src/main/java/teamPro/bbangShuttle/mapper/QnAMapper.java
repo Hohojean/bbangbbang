@@ -13,6 +13,7 @@ public interface QnAMapper {
 
   // ** selectList
   List<QnAVO> selectList();
+  List<QnAVO> idList();
 
   // ** selectOne
   QnAVO selectOne(QnAVO vo);

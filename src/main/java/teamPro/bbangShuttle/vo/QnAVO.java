@@ -18,4 +18,5 @@ public class QnAVO {
   private int qna_step;
   private int qna_child;
   private String regDate;
+
 }

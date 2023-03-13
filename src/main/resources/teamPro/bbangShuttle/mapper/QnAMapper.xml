@@ -4,9 +4,9 @@
 <mapper namespace="teamPro.bbangShuttle.mapper.QnAMapper">
 
     <!-- CRUD SQL문 -->
-    <select id="selectList" resultType="QnAVO">
+    <select id="selectList" resultType="teamPro.bbangShuttle.vo.QnAVO">
         SELECT
-            qnaNo, userID, qnaTitle, qnaContent, qna_root, qna_step, qna_child, regDate
+            *
         FROM
             qna
         order by qna_root desc, qna_step asc
