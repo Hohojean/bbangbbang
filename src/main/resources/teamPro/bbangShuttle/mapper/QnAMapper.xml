@@ -12,6 +12,15 @@
         order by qna_root desc, qna_step asc
     </select>
 
+    <select id="idList" resultType="QnAVO">
+        SELECT
+            qnaNo, userID, qnaTitle, qnaContent, qna_root, qna_step, qna_child, regDate
+        FROM
+            qna
+        where userID = #{userID}
+        order by qna_root desc, qna_step asc
+    </select>
+
     <select id="selectOne" resultType="QnAVO">
         select * from qna where qnaNo=${qnaNo}
     </select>
