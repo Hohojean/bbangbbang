@@ -43,12 +43,8 @@ public class QnAServiceImpl implements QnAService {
 
   // ** Reply_Insert
   @Override
-  public int rinsert(QnAVO vo) {
-    if ( mapper.rinsert(vo)>0 ) {
-      // stepUpdate
-      System.out.println("** stepUpdate Count => "+mapper.stepUpdate(vo));
-      return 1 ;
-    } else return 0;
+  public int ainsert(QnAVO vo) {
+    return mapper.ainsert(vo);
   }
 }
 

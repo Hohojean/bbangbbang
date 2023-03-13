@@ -20,8 +20,7 @@ public interface ReviewService {
   int update(ReviewVO vo);
 
   // ** Delete
-  int delete(ReviewVO vo);
+  int delete(int reviewNo);
 
-  int rinsert(ReviewVO vo);
 
 }

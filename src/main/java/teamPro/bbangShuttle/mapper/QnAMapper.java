@@ -2,7 +2,6 @@ package teamPro.bbangShuttle.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
-import teamPro.bbangShuttle.vo.NoticeVO;
 import teamPro.bbangShuttle.vo.QnAVO;
 
 import java.util.List;
@@ -24,7 +23,6 @@ public interface QnAMapper {
   // ** Delete
   int delete(int qnaNo);
 
-  int rinsert(QnAVO vo);
-  int stepUpdate(QnAVO vo);
+  int ainsert(QnAVO vo);
 
 }

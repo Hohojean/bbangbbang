@@ -6,8 +6,8 @@ import teamPro.bbangShuttle.vo.NoticeVO;
 import java.util.List;
 
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor // 파라미터가 없는 기본 생성자
+@AllArgsConstructor // 모든 파라미터를 받는 생성자
 @Getter
 @Setter
 @ToString

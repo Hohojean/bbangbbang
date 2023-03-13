@@ -14,9 +14,7 @@ public class QnAVO {
   private String userID;
   private String qnaTitle;
   private String qnaContent;
-  private int qna_root;
-  private int qna_step;
-  private int qna_child;
-  private String regDate;
-
+  private String q_regDate;
+  private String qnaAnswer;
+  private String a_regDate;
 }

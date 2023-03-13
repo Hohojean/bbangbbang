@@ -17,10 +17,7 @@ public class ReviewVO {
   private String reviewTitle;
   private String reviewContent;
   private String regDate;
-  private int review_root;
-  private int review_step;
-  private int review_child;
-  private int review_star;
+  private int reviewStar;
   private String imgName;
   private int cnt;
 }

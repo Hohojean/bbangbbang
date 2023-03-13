@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import teamPro.bbangShuttle.mapper.NoticeMapper;
-import teamPro.bbangShuttle.paging.SearchCriteria;
 import teamPro.bbangShuttle.vo.NoticeVO;
 
 import java.util.List;

@@ -43,17 +43,8 @@ public class ReviewServiceImpl implements ReviewService {
 
   // ** Delete
   @Override
-  public int delete(ReviewVO vo) {
-    return mapper.delete(vo);
+  public int delete(int reviewNo) {
+    return mapper.delete(reviewNo);
   }
 
-  // ** Reply_Insert
-  @Override
-  public int rinsert(ReviewVO vo) {
-    if (mapper.rinsert(vo) > 0) {
-      // stepUpdate
-      System.out.println("** stepUpdate Count => " + mapper.stepUpdate(vo));
-      return 1;
-    } else return 0;
-  }
 }

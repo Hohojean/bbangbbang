@@ -1,7 +1,6 @@
 package teamPro.bbangShuttle.dto;
 
 import lombok.*;
-import teamPro.bbangShuttle.vo.NoticeVO;
 import teamPro.bbangShuttle.vo.ReviewVO;
 
 import java.util.List;

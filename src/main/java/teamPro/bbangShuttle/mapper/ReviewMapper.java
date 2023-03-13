@@ -13,7 +13,6 @@ public interface ReviewMapper {
   List<ReviewVO> selectList();
   List<ReviewVO> itemReviewList(int itemNo);
 
-
   // ** selectOne
   ReviewVO selectOne(ReviewVO vo);
 
@@ -24,8 +23,6 @@ public interface ReviewMapper {
   int update(ReviewVO vo);
 
   // ** Delete
-  int delete(ReviewVO vo);
+  int delete(int reviewNo);
 
-  int rinsert(ReviewVO vo);
-  int stepUpdate(ReviewVO vo);
 }
