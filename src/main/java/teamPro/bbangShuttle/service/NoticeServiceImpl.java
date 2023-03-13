@@ -18,25 +18,6 @@ public class NoticeServiceImpl implements NoticeService {
 
   private final NoticeMapper mapper;
 
-  // ** SearchCriteria PageList
-  @Override
-  public List<NoticeVO> searchList(SearchCriteria cri) {
-    return mapper.searchList(cri);
-  }
-  @Override
-  public int searchTotalCount(SearchCriteria cri) {
-    return mapper.searchTotalCount(cri);
-  }
-
-  // ** Criteria PageList
-  @Override
-  public List<NoticeVO> criList(Criteria cri) {
-    return mapper.criList(cri);
-  }
-  @Override
-  public int criTotalCount() {
-    return mapper.criTotalCount();
-  }
 
   // ** selectList
   @Override

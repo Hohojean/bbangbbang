@@ -14,13 +14,6 @@ import java.util.Optional;
 @Repository
 public interface NoticeMapper {
 
-  // ** SearchCriteria PageList
-  List<NoticeVO> searchList(SearchCriteria cri);
-  int searchTotalCount(SearchCriteria cri);
-
-  // ** Criteria PageList
-  List<NoticeVO> criList(Criteria cri);
-  int criTotalCount();
 
   // ** selectList
   List<NoticeVO> selectList();
