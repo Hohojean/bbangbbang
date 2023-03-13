@@ -19,7 +19,7 @@ import teamPro.bbangShuttle.vo.NoticeVO;
 @RequestMapping("/notices")
 public class NoticeController {
 
-  private final NoticeService service; //서비스와 연결
+  private final NoticeService service;
 
   // 작성 게시글 등록(C) - 관리자 권한
   @PostMapping
