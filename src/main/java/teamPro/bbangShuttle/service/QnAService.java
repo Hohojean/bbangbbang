@@ -7,6 +7,7 @@ import java.util.List;
 public interface QnAService {
   // ** selectList
   List<QnAVO> selectList();
+  List<QnAVO> idList();
 
   // ** selectOne
   QnAVO selectOne(QnAVO vo);
