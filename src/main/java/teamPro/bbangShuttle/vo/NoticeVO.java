@@ -11,7 +11,6 @@ import lombok.ToString;
 @ToString
 @RequiredArgsConstructor
 public class NoticeVO {
-  @JsonProperty(value = "noticeNo")
   private int noticeNo;
   private String noticeTitle;
   private String noticeContent;
