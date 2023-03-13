@@ -17,7 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class NoticeController {
 
-  private final NoticeService service; //서비스와 연결
+  private final NoticeService service;
 
   // 페이징 처리
 //  @GetMapping("noticepaging")
