@@ -5,7 +5,7 @@ import teamPro.bbangShuttle.vo.OrderVO;
 import java.util.List;
 
 public interface OrderService {
-    List<OrderVO> orderListById(OrderVO vo);
+    List<OrderVO> orderListById(String userID);
 
     List<OrderVO> orderListByAll();
 

@@ -1,13 +1,12 @@
 package teamPro.bbangShuttle.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import teamPro.bbangShuttle.dto.CartDTO;
 import teamPro.bbangShuttle.service.CartService;
 import teamPro.bbangShuttle.vo.CartVO;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,38 +15,56 @@ public class CartController {
 
     private final CartService cartService;
 
-    @GetMapping("/{userID}")
-    public Map<String, Object> cartList(@PathVariable CartVO userID) {
-        Map<String, Object> result = new ConcurrentHashMap<>();
-        result.put("cart", cartService.cartList(userID));
-        return result;
+    @GetMapping
+    public ResponseEntity<?> cartList(@PathVariable CartVO userID) {
+        try {
+            CartDTO<CartVO> response = CartDTO.<CartVO>builder()
+                    .cartList(cartService.cartList(userID))
+                    .build();
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            CartDTO<CartVO> response = CartDTO.<CartVO>builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @PatchMapping
-    public Map<String, Object> cartCount(@RequestBody CartVO vo) {
-        Map<String, Object> result = new ConcurrentHashMap<>();
+    public ResponseEntity<?> cartCount(@RequestBody CartVO vo) {
+        try {
         CartVO item = cartService.cartItem(vo);
         if(vo.getCartAmount() == 1 && item.getCartAmount() == 1) {
             cartService.cartItemDelete(vo);
         } else {
             cartService.cartItemCount(vo);
         }
-        result.put("cart",cartService.cartList(vo));
-        return result;
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            CartDTO<CartVO> response = CartDTO.<CartVO>builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @PutMapping
-    public Map<String, Object> cartInsert(@RequestBody CartVO vo) {
-        Map<String, Object> result = new ConcurrentHashMap<>();
-        if(cartService.cartItem(vo) == null) {
-            cartService.cartSave(vo);
-        } else {
-            vo.setCartAmount(vo.getCartAmount()+cartService.cartItem(vo).getCartAmount());
-            cartService.cartItemCount(vo);
+    public ResponseEntity<?> cartInsert(@RequestBody CartVO vo) {
+        try {
+            if(cartService.cartItem(vo) == null) {
+                cartService.cartSave(vo);
+            } else {
+                vo.setCartAmount(vo.getCartAmount()+cartService.cartItem(vo).getCartAmount());
+                cartService.cartItemCount(vo);
+            }
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            CartDTO<CartVO> response = CartDTO.<CartVO>builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-        result.put("cart", cartService.cartList(vo));
 
-        return result;
     }
 
 }

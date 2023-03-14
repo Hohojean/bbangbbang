@@ -2,71 +2,129 @@ package teamPro.bbangShuttle.controller;
 
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import teamPro.bbangShuttle.dto.ItemDTO;
+import teamPro.bbangShuttle.security.TokenProvider;
 import teamPro.bbangShuttle.service.ItemService;
 import teamPro.bbangShuttle.service.ReviewService;
 import teamPro.bbangShuttle.vo.ItemVO;
 
-
-import java.security.Security;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/item")
+@Log4j2
 public class ItemController {
 
     private final ItemService itemService;
     private final ReviewService reviewService;
+    private final TokenProvider tokenProvider;
 
     @GetMapping
-    public Map<String, Object> itemList(){
-        Map<String, Object> result = new ConcurrentHashMap<>();
-        result.put("item", itemService.findAllItem());
-
-
-        SecurityContextHolder.getContext().getAuthentication().getCredentials();
-        return result;
+    public ResponseEntity<?> itemList() {
+        try {
+            ItemDTO<ItemVO> response = ItemDTO.<ItemVO>builder()
+                    .itemList(itemService.findAllItem())
+                    .build();
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            ItemDTO<ItemVO> response = ItemDTO.<ItemVO>builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @GetMapping("/{itemNo}")
-    public Map<String, Object> itemDetail(@PathVariable int itemNo) {
-        Map<String, Object> result = new ConcurrentHashMap<>();
-        result.put("item", itemService.ItemDetail(itemNo));
-        result.put("review",reviewService.itemReviewList(itemNo));
-
-        return result;
+    public ResponseEntity<?> itemDetail(@PathVariable int itemNo) {
+        try {
+            ItemDTO<ItemVO> response = ItemDTO.<ItemVO>builder()
+                    .item(itemService.ItemDetail(itemNo))
+                    .review(reviewService.itemReviewList(itemNo))
+                    .build();
+            log.info(response);
+            log.info(itemNo);
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            ItemDTO<ItemVO> response = ItemDTO.<ItemVO>builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @PutMapping
-    public Map<String, Object> itemSave(@RequestBody ItemVO vo) {
-        Map<String, Object> result = new ConcurrentHashMap<>();
-        if(itemService.save(vo) > 0) {
-            result.put("item", itemService.findAllItem());
+    public ResponseEntity<?> itemSave(@RequestBody ItemVO vo, HttpServletRequest request) {
+        try {
+            if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
+                throw new IllegalArgumentException("Unauthorized access");
+            }
+            if (itemService.save(vo) < 1) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            ItemDTO<ItemVO> response = ItemDTO.<ItemVO>builder()
+                    .itemList(itemService.findAllItem())
+                    .build();
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            ItemDTO<ItemVO> response = ItemDTO.<ItemVO>builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
-        return result;
     }
 
     @DeleteMapping
-    public Map<String, Object> itemDelete(@RequestBody ItemVO vo) {
-        Map<String, Object> result = new ConcurrentHashMap<>();
-        if(itemService.delete(vo) > 0) {
-            result.put("item", itemService.findAllItem());
+    public ResponseEntity<?> itemDelete(@RequestBody ItemVO vo,HttpServletRequest request) {
+        try {
+            if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
+                throw new IllegalArgumentException("Unauthorized access");
+            }
+            if (itemService.delete(vo) < 1) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            ItemDTO<ItemVO> response = ItemDTO.<ItemVO>builder()
+                    .itemList(itemService.findAllItem())
+                    .build();
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            ItemDTO<ItemVO> response = ItemDTO.<ItemVO>builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
-        return result;
     }
 
     @PatchMapping
-    public Map<String, Object> itemUpdate(@RequestBody ItemVO vo) {
-        Map<String, Object> result = new ConcurrentHashMap<>();
-        if(itemService.update(vo) > 0) {
-            result.put("item", itemService.findAllItem());
+    public ResponseEntity<?> itemUpdate(@RequestBody ItemVO vo, HttpServletRequest request) {
+        try {
+            if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
+                throw new IllegalArgumentException("Unauthorized access");
+            }
+            if (itemService.update(vo) < 1) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            ItemDTO<ItemVO> response = ItemDTO.<ItemVO>builder()
+                    .itemList(itemService.findAllItem())
+                    .build();
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            ItemDTO<ItemVO> response = ItemDTO.<ItemVO>builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
-        return result;
+    }
+    private String getTokenFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (!StringUtils.isEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 }
