@@ -3,10 +3,14 @@ package teamPro.bbangShuttle.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import teamPro.bbangShuttle.dto.CartDTO;
+import teamPro.bbangShuttle.security.TokenProvider;
 import teamPro.bbangShuttle.service.CartService;
 import teamPro.bbangShuttle.vo.CartVO;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,10 +18,12 @@ import teamPro.bbangShuttle.vo.CartVO;
 public class CartController {
 
     private final CartService cartService;
+    private final TokenProvider tokenProvider;
 
     @GetMapping
-    public ResponseEntity<?> cartList(@PathVariable CartVO userID) {
+    public ResponseEntity<?> cartList(HttpServletRequest request) {
         try {
+        String userID=tokenProvider.validateAndGetUserId(getTokenFromRequest(request));
             CartDTO<CartVO> response = CartDTO.<CartVO>builder()
                     .cartList(cartService.cartList(userID))
                     .build();
@@ -65,6 +71,14 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
 
+    }
+
+    private String getTokenFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (!StringUtils.isEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 
 }

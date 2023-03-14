@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CartService {
 
-    List<CartVO> cartList(CartVO vo);
+    List<CartVO> cartList(String userID);
 
     CartVO cartItem(CartVO vo);
 

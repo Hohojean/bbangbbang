@@ -7,7 +7,7 @@ import java.util.List;
 
 @Mapper
 public interface CartMapper {
-    List<CartVO> cartList(CartVO vo);
+    List<CartVO> cartList(String userID);
 
     CartVO cartItem(CartVO vo);
 
