@@ -1,5 +1,6 @@
 package teamPro.bbangShuttle.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import teamPro.bbangShuttle.vo.NoticeVO;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class NoticeDTO<T> {
 
   private String error;

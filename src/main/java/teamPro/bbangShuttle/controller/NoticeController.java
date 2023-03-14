@@ -5,10 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import teamPro.bbangShuttle.dto.NoticeDTO;
+import teamPro.bbangShuttle.security.TokenProvider;
 import teamPro.bbangShuttle.service.NoticeService;
 import teamPro.bbangShuttle.vo.NoticeVO;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Log4j2
 @RestController
@@ -17,13 +21,15 @@ import teamPro.bbangShuttle.vo.NoticeVO;
 public class NoticeController {
 
   private final NoticeService service;
+  private final TokenProvider tokenProvider;
 
   // 작성 게시글 등록(C) - 관리자 권한
   @PostMapping
-  public ResponseEntity<?> noticeInsert(@RequestBody NoticeVO vo) {
-
-    log.info("** insert 전송된 vo 확인 => "+vo);
+  public ResponseEntity<?> noticeInsert(@RequestBody NoticeVO vo, HttpServletRequest request) {
     try {
+//      if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
+//        throw new IllegalArgumentException("Unauthorized access");
+//      }
       service.insert(vo);
       NoticeDTO<NoticeVO> response = NoticeDTO.<NoticeVO>builder()
           .noticeList(service.selectList())
@@ -73,9 +79,12 @@ public class NoticeController {
   }
 
   // 게시글 수정(U) - 관리자 권한
-  @PutMapping("/{noticeNo}")
-  public ResponseEntity<?> noticeUpdate(@RequestBody  NoticeVO vo) {
+  @PatchMapping("/{noticeNo}")
+  public ResponseEntity<?> noticeUpdate(@RequestBody  NoticeVO vo, HttpServletRequest request) {
     try {
+//      if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
+//        throw new IllegalArgumentException("Unauthorized access");
+//      }
       service.update(vo);
       NoticeDTO<NoticeVO> response = NoticeDTO.<NoticeVO>builder()
           .noticeList(service.selectList())
@@ -91,8 +100,11 @@ public class NoticeController {
 
   // 게시글 삭제(D) - 관리자 권한
   @DeleteMapping("/{noticeNo}")
-  public ResponseEntity<?> noticeDelete(@PathVariable int noticeNo) {
+  public ResponseEntity<?> noticeDelete(@PathVariable int noticeNo, HttpServletRequest request) {
     try {
+//      if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
+//        throw new IllegalArgumentException("Unauthorized access");
+//      }
       service.delete(noticeNo);
       NoticeDTO<NoticeVO> response = NoticeDTO.<NoticeVO>builder()
           .noticeList(service.selectList())
@@ -104,5 +116,13 @@ public class NoticeController {
           .build();
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+  }
+
+  private String getTokenFromRequest(HttpServletRequest request) {
+    String bearerToken = request.getHeader("Authorization");
+    if (!StringUtils.isEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
+      return bearerToken.substring(7);
+    }
+    return null;
   }
 }
