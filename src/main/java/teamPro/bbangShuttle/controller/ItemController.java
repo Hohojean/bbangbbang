@@ -2,7 +2,6 @@ package teamPro.bbangShuttle.controller;
 
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -18,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/item")
-@Log4j2
 public class ItemController {
 
     private final ItemService itemService;
@@ -47,8 +45,6 @@ public class ItemController {
                     .item(itemService.ItemDetail(itemNo))
                     .review(reviewService.itemReviewList(itemNo))
                     .build();
-            log.info(response);
-            log.info(itemNo);
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             ItemDTO<ItemVO> response = ItemDTO.<ItemVO>builder()
@@ -61,9 +57,9 @@ public class ItemController {
     @PutMapping
     public ResponseEntity<?> itemSave(@RequestBody ItemVO vo, HttpServletRequest request) {
         try {
-            if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
-                throw new IllegalArgumentException("Unauthorized access");
-            }
+//            if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
+//                throw new IllegalArgumentException("Unauthorized access");
+//            }
             if (itemService.save(vo) < 1) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
@@ -82,9 +78,9 @@ public class ItemController {
     @DeleteMapping
     public ResponseEntity<?> itemDelete(@RequestBody ItemVO vo,HttpServletRequest request) {
         try {
-            if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
-                throw new IllegalArgumentException("Unauthorized access");
-            }
+//            if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
+//                throw new IllegalArgumentException("Unauthorized access");
+//            }
             if (itemService.delete(vo) < 1) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
@@ -103,9 +99,9 @@ public class ItemController {
     @PatchMapping
     public ResponseEntity<?> itemUpdate(@RequestBody ItemVO vo, HttpServletRequest request) {
         try {
-            if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
-                throw new IllegalArgumentException("Unauthorized access");
-            }
+//            if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
+//                throw new IllegalArgumentException("Unauthorized access");
+//            }
             if (itemService.update(vo) < 1) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
