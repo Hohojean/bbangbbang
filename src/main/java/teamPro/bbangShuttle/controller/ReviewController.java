@@ -5,12 +5,14 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import teamPro.bbangShuttle.dto.ReviewDTO;
-import teamPro.bbangShuttle.dto.ReviewDTO;
+import teamPro.bbangShuttle.security.TokenProvider;
 import teamPro.bbangShuttle.service.ReviewService;
 import teamPro.bbangShuttle.vo.ReviewVO;
-import teamPro.bbangShuttle.vo.ReviewVO;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 @Log4j2
@@ -20,6 +22,7 @@ import teamPro.bbangShuttle.vo.ReviewVO;
 public class ReviewController {
 
   private final ReviewService service;
+  private final TokenProvider tokenProvider;
 
   // 리뷰 등록(C) - 사용자
   @PostMapping
@@ -43,30 +46,16 @@ public class ReviewController {
   }
 
   // 리뷰 리스트 보기(R)
-  // 1) 모든 리뷰 리스트 보기
+  // 모든 리뷰 리스트 보기
   @GetMapping
-  public ResponseEntity<?> reviewList(@RequestBody ReviewVO vo) {
+  public ResponseEntity<?> reviewList(@RequestBody ReviewVO vo, HttpServletRequest request) {
     try {
+//      if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
+//        throw new IllegalArgumentException("Unauthorized access");
+//      }
       ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
             .reviewList(service.selectList())
             .build();
-      return ResponseEntity.ok().body(response);
-    } catch (Exception e) {
-      log.info("** insert  => Exception "+e.getMessage());
-      ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
-          .error(e.getMessage())
-          .build();
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-    }
-  }
-
-  // 2) 아이템별 리뷰 리스트 보기
-  @GetMapping("/{itemNo}")
-  public ResponseEntity<?> reviewList(@PathVariable int itemNo) {
-    try {
-      ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
-          .reviewList(service.itemReviewList(itemNo))
-          .build();
       return ResponseEntity.ok().body(response);
     } catch (Exception e) {
       log.info("** insert  => Exception "+e.getMessage());
@@ -95,7 +84,7 @@ public class ReviewController {
   }
   
   // 리뷰 업데이트
-  @PutMapping("/{reviewNo}")
+  @PatchMapping("/{reviewNo}")
   public ResponseEntity<?> reviewUpdate(@RequestBody ReviewVO vo) {
     try {
       service.update(vo);
@@ -126,5 +115,13 @@ public class ReviewController {
           .build();
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+  }
+
+  private String getTokenFromRequest(HttpServletRequest request) {
+    String bearerToken = request.getHeader("Authorization");
+    if (!StringUtils.isEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
+      return bearerToken.substring(7);
+    }
+    return null;
   }
 }

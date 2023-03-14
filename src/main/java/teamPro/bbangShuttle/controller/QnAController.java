@@ -5,12 +5,14 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import teamPro.bbangShuttle.dto.NoticeDTO;
 import teamPro.bbangShuttle.dto.QnADTO;
+import teamPro.bbangShuttle.security.TokenProvider;
 import teamPro.bbangShuttle.service.QnAService;
-import teamPro.bbangShuttle.vo.NoticeVO;
 import teamPro.bbangShuttle.vo.QnAVO;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Log4j2
 @RestController
@@ -19,6 +21,7 @@ import teamPro.bbangShuttle.vo.QnAVO;
 public class QnAController {
 
   private final QnAService service;
+  private final TokenProvider tokenProvider;
 
   // 질문글 등록(C) - 사용자
   @PostMapping
@@ -45,10 +48,10 @@ public class QnAController {
   // id = 관리자 인 경우 모든 리스트
   // id= user 인 경우 id 검색 qnalis
   @GetMapping
-  public ResponseEntity<?> qnaList(@AuthenticationPrincipal String userId, @RequestBody QnAVO vo) {
+  public ResponseEntity<?> qnaList(@AuthenticationPrincipal String userId, @RequestBody QnAVO vo, HttpServletRequest request) {
     try {
       QnADTO<QnAVO> response;
-      if(userId == "admin"){
+      if("admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))){
         response = QnADTO.<QnAVO>builder()
             .qnaList(service.selectList())
             .build();
@@ -103,8 +106,11 @@ public class QnAController {
 
   // 답변 등록 - 관리자 권한
   @PostMapping("/ainsert/{qnaNo}")
-  public ResponseEntity<?> ainsert(@PathVariable int qnaNo, @RequestBody QnAVO vo) {
+  public ResponseEntity<?> ainsert(@PathVariable int qnaNo, @RequestBody QnAVO vo, HttpServletRequest request) {
     try {
+//      if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
+//        throw new IllegalArgumentException("Unauthorized access");
+//      }
       service.ainsert(vo);
       QnADTO<QnAVO> response = QnADTO.<QnAVO>builder()
           .qnaOne(service.selectOne(vo))
@@ -117,5 +123,13 @@ public class QnAController {
           .build();
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+  }
+
+  private String getTokenFromRequest(HttpServletRequest request) {
+    String bearerToken = request.getHeader("Authorization");
+    if (!StringUtils.isEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
+      return bearerToken.substring(7);
+    }
+    return null;
   }
 }
