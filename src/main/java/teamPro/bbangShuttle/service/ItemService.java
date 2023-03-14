@@ -8,7 +8,6 @@ import java.util.Optional;
 
 
 public interface ItemService {
-
     List<ItemVO> findAllItem();
 
     Optional<ItemVO> ItemDetail(int itemNo);

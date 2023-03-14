@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 @RequestMapping("/item")
 public class ItemController {
-
     private final ItemService itemService;
     private final ReviewService reviewService;
     private final TokenProvider tokenProvider;

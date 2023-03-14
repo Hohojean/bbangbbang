@@ -16,7 +16,6 @@ import java.util.Optional;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemDTO<T> {
-
     private String error;
     private List<T> itemList;
     private Optional<ItemVO> item;

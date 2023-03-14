@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 @RequestMapping("/cart")
 public class CartController {
-
     private final CartService cartService;
     private final TokenProvider tokenProvider;
 

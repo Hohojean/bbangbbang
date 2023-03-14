@@ -7,7 +7,6 @@ import java.util.List;
 
 @Mapper
 public interface OrderMapper {
-
     List<OrderVO> orderListById(String userID);
 
     List<OrderVO> orderListByAll();

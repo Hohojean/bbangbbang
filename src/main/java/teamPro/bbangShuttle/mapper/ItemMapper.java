@@ -9,7 +9,6 @@ import java.util.Optional;
 
 @Mapper
 public interface ItemMapper {
-
     List<ItemVO> findAllItem();
 
     Optional<ItemVO> ItemDetail(int itemNo);

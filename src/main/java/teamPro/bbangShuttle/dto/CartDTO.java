@@ -13,7 +13,6 @@ import java.util.List;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CartDTO<T> {
-
     private String error;
     private List<T> cartList;
 }

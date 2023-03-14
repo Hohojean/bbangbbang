@@ -49,7 +49,6 @@ public class OrderController {
     public void saveOrder(@RequestBody OrderVO vo) {
 
     }
-
     private String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (!StringUtils.isEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {

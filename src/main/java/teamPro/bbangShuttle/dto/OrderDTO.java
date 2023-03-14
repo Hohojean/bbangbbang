@@ -16,7 +16,6 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderDTO<T> {
 
-
         private String error;
         private List<T> orderList;
         private Optional<OrderVO> order;
