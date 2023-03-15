@@ -5,10 +5,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import teamPro.bbangShuttle.dto.QnADTO;
-import teamPro.bbangShuttle.security.TokenProvider;
 import teamPro.bbangShuttle.service.QnAService;
 import teamPro.bbangShuttle.vo.QnAVO;
 
@@ -21,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 public class QnAController {
 
   private final QnAService service;
-  private final TokenProvider tokenProvider;
 
   // 질문글 등록(C) - 사용자
   @PostMapping
@@ -48,10 +45,10 @@ public class QnAController {
   // id = 관리자 인 경우 모든 리스트
   // id= user 인 경우 id 검색 qnalis
   @GetMapping
-  public ResponseEntity<?> qnaList(@AuthenticationPrincipal String userId, @RequestBody QnAVO vo, HttpServletRequest request) {
+  public ResponseEntity<?> qnaList(@AuthenticationPrincipal String userID, @RequestBody QnAVO vo) {
     try {
       QnADTO<QnAVO> response;
-      if("admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))){
+      if("admin".equals(userID)) {
         response = QnADTO.<QnAVO>builder()
             .qnaList(service.selectList())
             .build();
@@ -89,13 +86,18 @@ public class QnAController {
 
   // 질문글 삭제(D)
   @DeleteMapping("/{qnaNo}")
-  public ResponseEntity<?> qnaDelete(@PathVariable int qnaNo) {
+  public ResponseEntity<?> qnaDelete(@AuthenticationPrincipal String userID, @PathVariable int qnaNo, QnAVO vo) {
     try {
-      service.delete(qnaNo);
-      QnADTO<QnAVO> response = QnADTO.<QnAVO>builder()
-          .qnaList(service.selectList())
-          .build();
-      return ResponseEntity.ok().body(response);
+      if (vo.getUserID().equals(userID)) {
+        service.delete(qnaNo);
+        QnADTO<QnAVO> response = QnADTO.<QnAVO>builder()
+            .qnaList(service.selectList())
+            .build();
+        return ResponseEntity.ok().body(response);
+      } else {
+        new Exception("Unauthorized access");
+        return null;
+      }
     } catch (Exception e) {
       QnADTO<QnAVO> response = QnADTO.<QnAVO>builder()
           .error(e.getMessage())
@@ -106,16 +108,18 @@ public class QnAController {
 
   // 답변 등록 - 관리자 권한
   @PostMapping("/ainsert/{qnaNo}")
-  public ResponseEntity<?> ainsert(@PathVariable int qnaNo, @RequestBody QnAVO vo, HttpServletRequest request) {
+  public ResponseEntity<?> ainsert(@AuthenticationPrincipal String userID, @PathVariable int qnaNo, @RequestBody QnAVO vo) {
     try {
-//      if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
-//        throw new IllegalArgumentException("Unauthorized access");
-//      }
-      service.ainsert(vo);
-      QnADTO<QnAVO> response = QnADTO.<QnAVO>builder()
-          .qnaOne(service.selectOne(vo))
-          .build();
-      return ResponseEntity.ok().body(response);
+      if ("admin".equals(userID)) {
+        service.ainsert(vo);
+        QnADTO<QnAVO> response = QnADTO.<QnAVO>builder()
+            .qnaOne(service.selectOne(vo))
+            .build();
+        return ResponseEntity.ok().body(response);
+      } else {
+        new Exception("Unauthorized access");
+        return null;
+      }
     } catch (Exception e) {
       log.info("** insert  => Exception "+e.getMessage());
       QnADTO<QnAVO> response = QnADTO.<QnAVO>builder()
@@ -125,11 +129,4 @@ public class QnAController {
     }
   }
 
-  private String getTokenFromRequest(HttpServletRequest request) {
-    String bearerToken = request.getHeader("Authorization");
-    if (!StringUtils.isEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
-      return bearerToken.substring(7);
-    }
-    return null;
-  }
 }

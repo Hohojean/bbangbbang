@@ -5,10 +5,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import teamPro.bbangShuttle.dto.ReviewDTO;
-import teamPro.bbangShuttle.security.TokenProvider;
 import teamPro.bbangShuttle.service.ReviewService;
 import teamPro.bbangShuttle.vo.ReviewVO;
 
@@ -22,13 +20,12 @@ import javax.servlet.http.HttpServletRequest;
 public class ReviewController {
 
   private final ReviewService service;
-  private final TokenProvider tokenProvider;
 
   // 리뷰 등록(C) - 사용자
   @PostMapping
-  public ResponseEntity<?> reviewInsert(@AuthenticationPrincipal String userId, @RequestBody ReviewVO vo) {
+  public ResponseEntity<?> reviewInsert(@AuthenticationPrincipal String userID, @RequestBody ReviewVO vo) {
     try {
-      vo.setUserID(userId);
+      vo.setUserID(userID);
       service.insert(vo);
       log.info("** insert vo => "+vo);
       ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
@@ -46,17 +43,19 @@ public class ReviewController {
   }
 
   // 리뷰 리스트 보기(R)
-  // 모든 리뷰 리스트 보기
+  // 모든 리뷰 리스트 보기 - 관리자 권한
   @GetMapping
-  public ResponseEntity<?> reviewList(@RequestBody ReviewVO vo, HttpServletRequest request) {
+  public ResponseEntity<?> reviewList(@AuthenticationPrincipal String userID, @RequestBody ReviewVO vo) {
     try {
-//      if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
-//        throw new IllegalArgumentException("Unauthorized access");
-//      }
-      ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
+      if ("admin".equals(userID)) {
+        ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
             .reviewList(service.selectList())
             .build();
-      return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(response);
+      } else {
+        new Exception("Unauthorized access");
+        return null;
+      }
     } catch (Exception e) {
       log.info("** insert  => Exception "+e.getMessage());
       ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
@@ -83,15 +82,20 @@ public class ReviewController {
     }
   }
   
-  // 리뷰 업데이트
+  // 리뷰 수정 - 해당 리뷰 작성한 회원 일 경우
   @PatchMapping("/{reviewNo}")
-  public ResponseEntity<?> reviewUpdate(@RequestBody ReviewVO vo) {
+  public ResponseEntity<?> reviewUpdate(@AuthenticationPrincipal String userID, @RequestBody ReviewVO vo) {
     try {
-      service.update(vo);
-      ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
-          .reviewList(service.selectList())
-          .build();
-      return ResponseEntity.ok().body(response);
+      if (vo.getUserID().equals(userID)) {
+        service.update(vo);
+        ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
+            .reviewList(service.selectList())
+            .build();
+        return ResponseEntity.ok().body(response);
+      } else {
+        new Exception("Unauthorized access");
+        return null;
+      }
     } catch (Exception e) {
       ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
           .error(e.getMessage())
@@ -100,15 +104,20 @@ public class ReviewController {
     }
   }
 
-  // 리뷰 삭제(D)
+  // 리뷰 삭제(D) - 해당 리뷰 작성한 회원 일 경우
   @DeleteMapping("/{reviewNo}")
-  public ResponseEntity<?> reviewDelete(@PathVariable int reviewNo) {
+  public ResponseEntity<?> reviewDelete(@AuthenticationPrincipal String userID, @PathVariable int reviewNo, ReviewVO vo) {
     try {
-      service.delete(reviewNo);
-      ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
-          .reviewList(service.selectList())
-          .build();
-      return ResponseEntity.ok().body(response);
+      if (vo.getUserID().equals(userID)) {
+        service.delete(reviewNo);
+        ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
+            .reviewList(service.selectList())
+            .build();
+        return ResponseEntity.ok().body(response);
+      } else {
+        new Exception("Unauthorized access");
+        return null;
+      }
     } catch (Exception e) {
       ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
           .error(e.getMessage())
@@ -117,11 +126,4 @@ public class ReviewController {
     }
   }
 
-  private String getTokenFromRequest(HttpServletRequest request) {
-    String bearerToken = request.getHeader("Authorization");
-    if (!StringUtils.isEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
-      return bearerToken.substring(7);
-    }
-    return null;
-  }
 }

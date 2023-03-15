@@ -5,10 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import teamPro.bbangShuttle.dto.NoticeDTO;
-import teamPro.bbangShuttle.security.TokenProvider;
 import teamPro.bbangShuttle.service.NoticeService;
 import teamPro.bbangShuttle.vo.NoticeVO;
 
@@ -21,20 +20,21 @@ import javax.servlet.http.HttpServletRequest;
 public class NoticeController {
 
   private final NoticeService service;
-  private final TokenProvider tokenProvider;
 
   // 작성 게시글 등록(C) - 관리자 권한
   @PostMapping
-  public ResponseEntity<?> noticeInsert(@RequestBody NoticeVO vo, HttpServletRequest request) {
+  public ResponseEntity<?> noticeInsert(@AuthenticationPrincipal String userID, @RequestBody NoticeVO vo) {
     try {
-//      if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
-//        throw new IllegalArgumentException("Unauthorized access");
-//      }
+      if ("admin".equals(userID)){
       service.insert(vo);
       NoticeDTO<NoticeVO> response = NoticeDTO.<NoticeVO>builder()
           .noticeList(service.selectList())
           .build();
       return ResponseEntity.ok().body(response);
+      } else {
+        new Exception("Unauthorized access");
+        return null;
+      }
     } catch (Exception e) {
       log.info("** insert  => Exception "+e.getMessage());
       NoticeDTO<NoticeVO> response = NoticeDTO.<NoticeVO>builder()
@@ -80,16 +80,18 @@ public class NoticeController {
 
   // 게시글 수정(U) - 관리자 권한
   @PatchMapping("/{noticeNo}")
-  public ResponseEntity<?> noticeUpdate(@RequestBody  NoticeVO vo, HttpServletRequest request) {
+  public ResponseEntity<?> noticeUpdate(@AuthenticationPrincipal String userID, @RequestBody  NoticeVO vo) {
     try {
-//      if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
-//        throw new IllegalArgumentException("Unauthorized access");
-//      }
-      service.update(vo);
-      NoticeDTO<NoticeVO> response = NoticeDTO.<NoticeVO>builder()
-          .noticeList(service.selectList())
-          .build();
-      return ResponseEntity.ok().body(response);
+      if ("admin".equals(userID)) {
+        service.update(vo);
+        NoticeDTO<NoticeVO> response = NoticeDTO.<NoticeVO>builder()
+            .noticeList(service.selectList())
+            .build();
+        return ResponseEntity.ok().body(response);
+      } else {
+        new Exception("Unauthorized access");
+        return null;
+      }
     } catch (Exception e) {
       NoticeDTO<NoticeVO> response = NoticeDTO.<NoticeVO>builder()
           .error(e.getMessage())
@@ -100,16 +102,18 @@ public class NoticeController {
 
   // 게시글 삭제(D) - 관리자 권한
   @DeleteMapping("/{noticeNo}")
-  public ResponseEntity<?> noticeDelete(@PathVariable int noticeNo, HttpServletRequest request) {
+  public ResponseEntity<?> noticeDelete(@AuthenticationPrincipal String userID, @PathVariable int noticeNo) {
     try {
-//      if (!"admin".equals(tokenProvider.validateAndGetUserId(getTokenFromRequest(request)))) {
-//        throw new IllegalArgumentException("Unauthorized access");
-//      }
-      service.delete(noticeNo);
-      NoticeDTO<NoticeVO> response = NoticeDTO.<NoticeVO>builder()
-          .noticeList(service.selectList())
-          .build();
-      return ResponseEntity.ok().body(response);
+      if ("admin".equals(userID)) {
+        service.delete(noticeNo);
+        NoticeDTO<NoticeVO> response = NoticeDTO.<NoticeVO>builder()
+            .noticeList(service.selectList())
+            .build();
+        return ResponseEntity.ok().body(response);
+      } else {
+        new Exception("Unauthorized access");
+        return null;
+      }
     } catch (Exception e) {
       NoticeDTO<NoticeVO> response = NoticeDTO.<NoticeVO>builder()
           .error(e.getMessage())
@@ -118,11 +122,4 @@ public class NoticeController {
     }
   }
 
-  private String getTokenFromRequest(HttpServletRequest request) {
-    String bearerToken = request.getHeader("Authorization");
-    if (!StringUtils.isEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
-      return bearerToken.substring(7);
-    }
-    return null;
-  }
 }
