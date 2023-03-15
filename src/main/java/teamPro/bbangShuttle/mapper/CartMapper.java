@@ -15,4 +15,6 @@ public interface CartMapper {
     int cartItemCount(CartVO vo);
 
     int cartItemDelete(CartVO vo);
+
+    int cartEmpty(String userID);
 }

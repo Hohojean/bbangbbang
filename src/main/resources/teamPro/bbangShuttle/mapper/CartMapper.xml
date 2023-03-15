@@ -2,8 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="teamPro.bbangShuttle.mapper.CartMapper">
+
     <select id="cartList" resultType="cartVO">
-        select * from cart
+        select cart.itemNo, cart.cartAmount, item.itemName, item.itemPrice, item.itemCategory, item.imgName
+        from cart
+        inner join item
+        on cart.itemNo = item.itemNo
         where userID = #{userID}
     </select>
 
@@ -29,5 +33,10 @@
         delete from cart
         where itemNo = #{itemNo} and
         userID = #{userID}
+    </delete>
+
+    <delete id="cartEmpty">
+        delete from cart
+        where userID = #{userID}
     </delete>
 </mapper>

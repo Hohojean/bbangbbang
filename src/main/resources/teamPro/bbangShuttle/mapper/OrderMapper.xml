@@ -8,9 +8,20 @@
     </select>
 
     <select id="orderListById" resultType="OrderVO">
-        select * from orderList
-        where userID = ${userID}
-        order by orderNo desc;
+        select orderList.orderNo, orderList.orderDate, orderList.orderState,
+        orderDetail.itemName, orderDetail.itemAmount, orderDetail.itemPrice, orderDetail.itemNo
+        from orderList
+        inner join (
+        select orderNo,itemNo, itemName, itemAmount, itemPrice
+        from orderDetail
+        where orderNo in (
+        select orderNo from orderList
+        where userID = #{userID} )
+        order by itemPrice desc limit 1
+        ) as orderDetail
+        on orderList.orderNo = orderDetail.orderNo
+        where userID = #{userID} order by
+        orderList.orderNo desc;
     </select>
 
     <insert id="save" useGeneratedKeys="true" keyProperty="orderNo">

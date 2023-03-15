@@ -38,5 +38,10 @@ public class CartServiceImpl implements CartService {
         return cartMapper.cartItemDelete(vo);
     }
 
+    @Override
+    public int cartEmpty(String userID) {
+        return cartMapper.cartEmpty(userID);
+    }
+
 
 }

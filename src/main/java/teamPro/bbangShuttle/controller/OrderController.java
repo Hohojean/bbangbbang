@@ -1,18 +1,23 @@
 package teamPro.bbangShuttle.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import teamPro.bbangShuttle.dto.OrderDTO;
-import teamPro.bbangShuttle.security.TokenProvider;
+import teamPro.bbangShuttle.dto.OrderItemDTO;
 import teamPro.bbangShuttle.service.OrderItemSerive;
 import teamPro.bbangShuttle.service.OrderService;
+import teamPro.bbangShuttle.vo.CartVO;
+import teamPro.bbangShuttle.vo.OrderItemVO;
 import teamPro.bbangShuttle.vo.OrderVO;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
+
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/order")
@@ -20,11 +25,10 @@ public class OrderController {
 
     private final OrderService orderService;
     private final OrderItemSerive orderItemSerive;
-    private final TokenProvider tokenProvider;
 
     @GetMapping
-    public ResponseEntity<?> orderList(HttpServletRequest request) {
-        String userID = tokenProvider.validateAndGetUserId(getTokenFromRequest(request));
+    public ResponseEntity<?> orderList(@AuthenticationPrincipal String userID) {
+        log.info(orderService.orderListById(userID));
         OrderDTO<OrderVO> response;
         try {
             if(userID == "admin") {
@@ -45,15 +49,28 @@ public class OrderController {
         }
     }
 
-    @PutMapping
-    public void saveOrder(@RequestBody OrderVO vo) {
-
-    }
-    private String getTokenFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (!StringUtils.isEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+    @GetMapping("/{orderNo}")
+    public ResponseEntity<?> orderList(@AuthenticationPrincipal String userID, @PathVariable int orderNo) {
+        try {
+               OrderItemDTO<OrderItemVO> response = OrderItemDTO.<OrderItemVO>builder()
+                        .orderItemList(orderItemSerive.orderItemList(orderNo))
+                        .build();
+               log.info(response.getOrderItemList());
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            OrderItemDTO<OrderItemVO> response = OrderItemDTO.<OrderItemVO>builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-        return null;
     }
+
+//    @PutMapping
+//    public void saveOrder(@RequestBody OrderVO ordervo,
+//                          @RequestBody List<CartVO> cartvo,
+//                          @AuthenticationPrincipal String userID) {
+//        ordervo.setUserID(userID);
+//        orderService.save(ordervo);
+//        }
+//    }
 }

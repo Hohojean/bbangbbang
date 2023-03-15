@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @Getter @Setter
 @RequiredArgsConstructor
-public class CartVO {
+public class CartVO extends ItemVO{
     private String userID;
     private int itemNo;
     private int cartAmount;
