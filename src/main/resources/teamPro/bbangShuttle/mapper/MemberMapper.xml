@@ -4,7 +4,7 @@
 <mapper namespace="teamPro.bbangShuttle.mapper.MemberMapper">
 
     <select id="getUsers" resultType="MemberVO">
-        select * from user where id != 'admin';
+        select * from user where userID != 'admin';
     </select>
 
     <select id="selectOne" resultType="MemberVO">

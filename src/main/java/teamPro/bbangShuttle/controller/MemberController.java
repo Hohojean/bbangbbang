@@ -2,10 +2,14 @@ package teamPro.bbangShuttle.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.ibatis.javassist.NotFoundException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
@@ -33,16 +37,6 @@ public class MemberController {
     // => insert 성공 : status OK & vo return
     //           오류 : status Error & ResponseDTO 이용 Exception_Message
     log.info("** registerUser 전송된 vo 확인 => " + vo);
-
-    // ** Form 에 정의하지 않은 컬럼값 추가
-//    vo.setUserID("aa");
-//    vo.setUserName("그린컴퓨터");
-//    vo.setUserEmail("aa@naver.com");
-//    vo.setUserPwd("12345!");
-//    vo.setUserPhone("010-1234-5678");
-//    vo.setUserAddr("경기도 성남시 분당구");
-//    vo.setUserBirth("2002-02-02");
-//    vo.setUserGender("남과여");
 
     // ** Password_Encoding
     vo.setUserPwd(passwordEncoder.encode(vo.getUserPwd()));
@@ -114,8 +108,10 @@ public class MemberController {
 //    } else {
 //      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 //    }
+//    System.out.println(request.getHeader("Authorization").substring(7));
+//    System.out.println(token);
+//    System.out.println("->>"+currentUser.getUserID());
     SecurityContextHolder.clearContext();
-    System.out.println(getTokenFromRequest(request));
     return new UsernamePasswordAuthenticationToken(null, null);
   }// loginOut
 
@@ -126,18 +122,34 @@ public class MemberController {
     }
     return null;
   }
-
+  
   @GetMapping("/list")
-  public List<MemberVO> list() {
+  public List<MemberVO> list(MemberVO currentUser) {
     return service.selectList();
-  } // MemberList
+  }
+
+  @GetMapping("/{userID}")
+  public MemberVO detail(@PathVariable String userID,MemberVO vo) throws NotFoundException {
+    MemberVO user = service.selectOne(vo);
+    if (user == null) {
+      throw new NotFoundException("Member not found with id: " + userID);
+    }
+    return user;
+  }
+
 
   @PatchMapping
-  public ResponseEntity<?> update(@RequestBody MemberVO vo) {
+  public ResponseEntity<?> update(@PathVariable String userID,@AuthenticationPrincipal String loginID, MemberVO vo) {
     try {
       vo.setUserPwd(passwordEncoder.encode(vo.getUserPwd()));
-      service.update(vo);
-      return ResponseEntity.ok().build();
+      vo.setUserID(userID);
+      if(userID.equals(loginID)) {
+        service.update(vo);
+        return ResponseEntity.ok().build();
+      } else {
+        new Exception("ID 불일치");
+      }
+//        return ResponseEntity.ok().body("update ok!");
     } catch (Exception e) {
       log.error("Failed to update user with id {}", e);
       ResponseDTO response = ResponseDTO.builder()
@@ -145,18 +157,22 @@ public class MemberController {
           .build();
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+    return null;
   } // Update
 
-  @DeleteMapping
-  public ResponseEntity<?> delete(@RequestBody MemberVO vo) {
+
+  @DeleteMapping("/{userID}")
+  public ResponseEntity<?> delete(@PathVariable String userID,@AuthenticationPrincipal String loginID ,MemberVO vo) {
     try {
-      final String token = tokenProvider.create(vo);
-      String aa = tokenProvider.validateAndGetUserId(token);
-      if(aa == "admin" || aa == vo.getUserID()) {
+      vo.setUserID(userID);
+      System.out.println("userID = "+userID+", login =>"+loginID);
+      if ("admin".equals(loginID)) {
         service.delete(vo);
+        return ResponseEntity.ok().body("delete ok!");
+      } else {
+        new Exception("not admin");
       }
-      System.out.println(aa);
-      return ResponseEntity.ok().build();
+
     } catch (Exception e) {
       log.error("Failed to delete user with id {}", vo, e);
       ResponseDTO response = ResponseDTO.builder()
@@ -164,6 +180,7 @@ public class MemberController {
           .build();
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+    return null;
   } // Delete
 
 

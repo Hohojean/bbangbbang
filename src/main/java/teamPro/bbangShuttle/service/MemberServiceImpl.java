@@ -22,6 +22,7 @@ public class MemberServiceImpl implements MemberService {
     return memberMapper.selectOne(vo);
   }
 
+
   @Override
   public int insert(MemberVO vo) {
     return memberMapper.Insert(vo);
