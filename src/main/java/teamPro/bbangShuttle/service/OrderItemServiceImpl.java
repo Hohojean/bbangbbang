@@ -14,13 +14,8 @@ public class OrderItemServiceImpl implements OrderItemSerive{
     private final OrderItemMapper orderItemMapper;
 
     @Override
-    public List<OrderItemVO> orderItemList(OrderItemVO vo) {
-        return orderItemMapper.orderItemList(vo);
-    }
-
-    @Override
-    public OrderItemVO orderItemSelectOne(OrderItemVO vo) {
-        return orderItemMapper.orderItemSelectOne(vo);
+    public List<OrderItemVO> orderItemList(int orderNo) {
+        return orderItemMapper.orderItemList(orderNo);
     }
 
     @Override

@@ -11,6 +11,7 @@ import lombok.Setter;
 public class OrderItemVO {
 
     private int orderNo;
+    private String itemName;
     private int itemNo;
     private int itemAmount;
     private Integer itemPrice;

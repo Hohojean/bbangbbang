@@ -1,9 +1,7 @@
 package teamPro.bbangShuttle.service;
 
 import teamPro.bbangShuttle.vo.CartVO;
-import teamPro.bbangShuttle.vo.ItemVO;
 
-import java.lang.reflect.Member;
 import java.util.List;
 
 public interface CartService {
@@ -16,4 +14,5 @@ public interface CartService {
     int cartItemCount(CartVO vo);
 
     int cartItemDelete(CartVO vo);
+    int cartEmpty(String userID);
 }

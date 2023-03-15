@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Getter @Setter
 @RequiredArgsConstructor
-public class OrderVO {
+public class OrderVO extends OrderItemVO{
 
     private int orderNo;
     private String userID;

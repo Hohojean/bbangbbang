@@ -7,9 +7,7 @@ import java.util.List;
 
 @Mapper
 public interface OrderItemMapper {
-    List<OrderItemVO> orderItemList(OrderItemVO vo);
-
-    OrderItemVO orderItemSelectOne(OrderItemVO vo);
+    List<OrderItemVO> orderItemList(int orderNo);
 
     int save(OrderItemVO vo);
 }
