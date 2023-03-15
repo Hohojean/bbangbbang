@@ -139,11 +139,10 @@ public class MemberController {
 
 
   @PatchMapping
-  public ResponseEntity<?> update(@PathVariable String userID,@AuthenticationPrincipal String loginID, MemberVO vo) {
+  public ResponseEntity<?> update(@AuthenticationPrincipal String loginID, @RequestBody MemberVO vo) {
     try {
       vo.setUserPwd(passwordEncoder.encode(vo.getUserPwd()));
-      vo.setUserID(userID);
-      if(userID.equals(loginID)) {
+      if(vo.getUserID().equals(loginID)) {
         service.update(vo);
         return ResponseEntity.ok().build();
       } else {
