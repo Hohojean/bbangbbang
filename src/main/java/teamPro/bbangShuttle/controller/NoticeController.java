@@ -11,7 +11,6 @@ import teamPro.bbangShuttle.dto.NoticeDTO;
 import teamPro.bbangShuttle.service.NoticeService;
 import teamPro.bbangShuttle.vo.NoticeVO;
 
-import javax.servlet.http.HttpServletRequest;
 
 @Log4j2
 @RestController
@@ -80,7 +79,7 @@ public class NoticeController {
 
   // 게시글 수정(U) - 관리자 권한
   @PatchMapping("/{noticeNo}")
-  public ResponseEntity<?> noticeUpdate(@AuthenticationPrincipal String userID, @RequestBody  NoticeVO vo) {
+  public ResponseEntity<?> noticeUpdate(@AuthenticationPrincipal String userID, @RequestBody NoticeVO vo) {
     try {
       if ("admin".equals(userID)) {
         service.update(vo);

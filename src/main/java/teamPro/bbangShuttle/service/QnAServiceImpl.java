@@ -21,8 +21,8 @@ public class QnAServiceImpl implements QnAService {
     return mapper.selectList();
   }
   @Override
-  public List<QnAVO> idList() {
-    return mapper.idList();
+  public List<QnAVO> idList(String userID) {
+    return mapper.idList(userID);
   }
   // ** selectOne
   @Override

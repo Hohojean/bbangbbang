@@ -9,6 +9,7 @@ public interface ReviewService {
   // ** selectList
   List<ReviewVO> selectList();
   List<ReviewVO> itemReviewList(int itemNo);
+  List<ReviewVO> idReviewList(String userId);
 
   // ** selectOne
   ReviewVO selectOne(ReviewVO vo);
