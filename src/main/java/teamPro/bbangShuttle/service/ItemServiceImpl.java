@@ -20,6 +20,11 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
+    public List<ItemVO> randList() {
+        return itemmapper.randList();
+    }
+
+    @Override
     public Optional<ItemVO> ItemDetail(int itemNo) {
         return itemmapper.ItemDetail(itemNo);
     }

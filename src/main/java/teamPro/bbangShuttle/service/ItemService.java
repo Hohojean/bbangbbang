@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface ItemService {
     List<ItemVO> findAllItem();
 
+    List<ItemVO> randList();
+
     Optional<ItemVO> ItemDetail(int itemNo);
 
     int save(ItemVO vo);

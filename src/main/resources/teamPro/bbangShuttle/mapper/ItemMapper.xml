@@ -6,6 +6,12 @@
         select * from item
     </select>
 
+    <select id="randList" resultType="itemVO">
+        select * from item
+        order by rand()
+        limit 4;
+    </select>
+
     <select id="ItemDetail" resultType="itemVO">
         select * from item
         where itemNo = ${itemNo}

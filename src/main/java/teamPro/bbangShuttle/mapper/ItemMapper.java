@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface ItemMapper {
     List<ItemVO> findAllItem();
 
+    List<ItemVO> randList();
+
     Optional<ItemVO> ItemDetail(int itemNo);
 
     int save(ItemVO vo);
