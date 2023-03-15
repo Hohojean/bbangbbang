@@ -2,10 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="teamPro.bbangShuttle.mapper.OrderMapper">
-    <select id="orderListByAll" resultType="OrderVO">
-        select * from orderList
-        order by orderNo desc;
-    </select>
 
     <select id="orderListById" resultType="OrderVO">
         select orderList.orderNo, orderList.orderDate, orderList.orderState,
@@ -16,11 +12,16 @@
         from orderDetail
         where orderNo in (
         select orderNo from orderList
-        where userID = #{userID} )
+        <if test="userID !='admin'.toString()">
+            where userID = #{userID}
+        </if>)
         order by itemPrice desc limit 1
         ) as orderDetail
         on orderList.orderNo = orderDetail.orderNo
-        where userID = #{userID} order by
+        <if test="userID !='admin'.toString()">
+            where userID = #{userID}
+        </if>
+        order by
         orderList.orderNo desc;
     </select>
 

@@ -8,13 +8,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import teamPro.bbangShuttle.dto.OrderDTO;
 import teamPro.bbangShuttle.dto.OrderItemDTO;
+import teamPro.bbangShuttle.dto.SaveOrderDTO;
+import teamPro.bbangShuttle.service.CartService;
 import teamPro.bbangShuttle.service.OrderItemSerive;
 import teamPro.bbangShuttle.service.OrderService;
 import teamPro.bbangShuttle.vo.CartVO;
 import teamPro.bbangShuttle.vo.OrderItemVO;
 import teamPro.bbangShuttle.vo.OrderVO;
-
-import java.util.List;
 
 
 @Log4j2
@@ -25,24 +25,17 @@ public class OrderController {
 
     private final OrderService orderService;
     private final OrderItemSerive orderItemSerive;
+    private final CartService cartService;
 
     @GetMapping
     public ResponseEntity<?> orderList(@AuthenticationPrincipal String userID) {
-        log.info(orderService.orderListById(userID));
-        OrderDTO<OrderVO> response;
         try {
-            if(userID == "admin") {
-                response = OrderDTO.<OrderVO>builder()
-                        .orderList(orderService.orderListByAll())
+                OrderDTO<OrderVO> response = OrderDTO.<OrderVO>builder()
+                        .orderList(orderService.orderListById(userID))
                         .build();
-            } else {
-            response = OrderDTO.<OrderVO>builder()
-                    .orderList(orderService.orderListById(userID))
-                    .build();
-            }
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
-            response = OrderDTO.<OrderVO>builder()
+            OrderDTO<OrderVO> response = OrderDTO.<OrderVO>builder()
                     .error(e.getMessage())
                     .build();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -55,7 +48,6 @@ public class OrderController {
                OrderItemDTO<OrderItemVO> response = OrderItemDTO.<OrderItemVO>builder()
                         .orderItemList(orderItemSerive.orderItemList(orderNo))
                         .build();
-               log.info(response.getOrderItemList());
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             OrderItemDTO<OrderItemVO> response = OrderItemDTO.<OrderItemVO>builder()
@@ -65,12 +57,27 @@ public class OrderController {
         }
     }
 
-//    @PutMapping
-//    public void saveOrder(@RequestBody OrderVO ordervo,
-//                          @RequestBody List<CartVO> cartvo,
-//                          @AuthenticationPrincipal String userID) {
-//        ordervo.setUserID(userID);
-//        orderService.save(ordervo);
-//        }
-//    }
-}
+    @PutMapping
+    public ResponseEntity<?> saveOrder(@RequestBody SaveOrderDTO<CartVO> dto,
+                          @AuthenticationPrincipal String userID) {
+        try {
+            OrderItemVO vo = new OrderItemVO();
+            orderService.save(dto.getOrderVO());
+            for (CartVO cartvo:dto.getOrderItemList()) {
+                vo.setOrderNo(dto.getOrderVO().getOrderNo());
+                vo.setItemAmount(cartvo.getCartAmount());
+                vo.setItemName(cartvo.getItemName());
+                vo.setItemNo(cartvo.getItemNo());
+                vo.setItemPrice(cartvo.getItemPrice());
+                orderItemSerive.save(vo);
+            }
+            cartService.cartEmpty(userID);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            OrderItemDTO<OrderItemVO> response = OrderItemDTO.<OrderItemVO>builder()
+                    .error(e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+        }
+    }

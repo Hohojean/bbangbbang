@@ -22,13 +22,10 @@ public class CartController {
     public ResponseEntity<?> cartList(@AuthenticationPrincipal String userID) {
 
         try {
-            log.info(userID);
             log.info(cartService.cartList(userID));
             CartDTO<CartVO> response = CartDTO.<CartVO>builder()
                     .cartList(cartService.cartList(userID))
                     .build();
-            log.info(response);
-            log.info("11");
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             CartDTO<CartVO> response = CartDTO.<CartVO>builder()
@@ -48,7 +45,7 @@ public class CartController {
         } else {
             cartService.cartItemCount(vo);
         }
-            return ResponseEntity.ok().build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             CartDTO<CartVO> response = CartDTO.<CartVO>builder()
                     .error(e.getMessage())
@@ -67,7 +64,7 @@ public class CartController {
                 vo.setCartAmount(vo.getCartAmount()+cartService.cartItem(vo).getCartAmount());
                 cartService.cartItemCount(vo);
             }
-            return ResponseEntity.ok().build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             CartDTO<CartVO> response = CartDTO.<CartVO>builder()
                     .error(e.getMessage())

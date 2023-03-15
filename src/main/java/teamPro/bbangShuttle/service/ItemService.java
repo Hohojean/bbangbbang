@@ -18,5 +18,5 @@ public interface ItemService {
 
     int update(ItemVO vo);
 
-    int delete(ItemVO vo);
+    int delete(int itemNo);
 }

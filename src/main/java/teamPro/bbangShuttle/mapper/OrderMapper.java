@@ -9,8 +9,6 @@ import java.util.List;
 public interface OrderMapper {
     List<OrderVO> orderListById(String userID);
 
-    List<OrderVO> orderListByAll();
-
     int save(OrderVO vo);
 
 }

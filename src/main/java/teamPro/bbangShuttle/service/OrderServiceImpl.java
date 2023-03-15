@@ -19,11 +19,6 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public List<OrderVO> orderListByAll() {
-        return orderMapper.orderListByAll();
-    }
-
-    @Override
     public int save(OrderVO vo) {
         return orderMapper.save(vo);
     }

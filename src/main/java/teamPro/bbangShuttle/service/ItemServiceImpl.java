@@ -40,7 +40,7 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public int delete(ItemVO vo) {
-        return itemmapper.delete(vo);
+    public int delete(int itemNo) {
+        return itemmapper.delete(itemNo);
     }
 }
