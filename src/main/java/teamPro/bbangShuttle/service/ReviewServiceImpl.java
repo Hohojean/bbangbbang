@@ -24,6 +24,11 @@ public class ReviewServiceImpl implements ReviewService {
   public List<ReviewVO> itemReviewList(int itemNo) {
     return mapper.itemReviewList(itemNo);
   }
+
+  @Override
+  public List<ReviewVO> idReviewList(String userId) {
+    return mapper.idReviewList(userId);
+  }
   // ** selectOne
   @Override
   public ReviewVO selectOne(ReviewVO vo) {

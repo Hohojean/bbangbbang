@@ -10,8 +10,6 @@ import teamPro.bbangShuttle.dto.QnADTO;
 import teamPro.bbangShuttle.service.QnAService;
 import teamPro.bbangShuttle.vo.QnAVO;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Log4j2
 @RestController
 @RequiredArgsConstructor
@@ -43,18 +41,18 @@ public class QnAController {
 
   // 질문글 리스트 보기(R)
   // id = 관리자 인 경우 모든 리스트
-  // id= user 인 경우 id 검색 qnalis
+  // id= user 인 경우 id 검색
   @GetMapping
-  public ResponseEntity<?> qnaList(@AuthenticationPrincipal String userID, @RequestBody QnAVO vo) {
+  public ResponseEntity<?> qnaList(@AuthenticationPrincipal String userID) {
     try {
       QnADTO<QnAVO> response;
       if("admin".equals(userID)) {
-        response = QnADTO.<QnAVO>builder()
+       response = QnADTO.<QnAVO>builder()
             .qnaList(service.selectList())
             .build();
       } else {
         response = QnADTO.<QnAVO>builder()
-            .qnaList(service.idList())
+            .qnaList(service.idList(userID))
             .build();
       }
       return ResponseEntity.ok().body(response);
@@ -88,16 +86,16 @@ public class QnAController {
   @DeleteMapping("/{qnaNo}")
   public ResponseEntity<?> qnaDelete(@AuthenticationPrincipal String userID, @PathVariable int qnaNo, QnAVO vo) {
     try {
-      if (vo.getUserID().equals(userID)) {
+//      if (vo.getUserID().equals(userID)) {
         service.delete(qnaNo);
         QnADTO<QnAVO> response = QnADTO.<QnAVO>builder()
             .qnaList(service.selectList())
             .build();
         return ResponseEntity.ok().body(response);
-      } else {
-        new Exception("Unauthorized access");
-        return null;
-      }
+//      } else {
+//        new Exception("Unauthorized access");
+//        return null;
+//      }
     } catch (Exception e) {
       QnADTO<QnAVO> response = QnADTO.<QnAVO>builder()
           .error(e.getMessage())

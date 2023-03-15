@@ -10,8 +10,6 @@ import teamPro.bbangShuttle.dto.ReviewDTO;
 import teamPro.bbangShuttle.service.ReviewService;
 import teamPro.bbangShuttle.vo.ReviewVO;
 
-import javax.servlet.http.HttpServletRequest;
-
 
 @Log4j2
 @RestController
@@ -45,11 +43,33 @@ public class ReviewController {
   // 리뷰 리스트 보기(R)
   // 모든 리뷰 리스트 보기 - 관리자 권한
   @GetMapping
-  public ResponseEntity<?> reviewList(@AuthenticationPrincipal String userID, @RequestBody ReviewVO vo) {
+  public ResponseEntity<?> reviewList() {
     try {
-      if ("admin".equals(userID)) {
+//      if ("admin".equals(userID)) {
         ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
             .reviewList(service.selectList())
+            .build();
+        return ResponseEntity.ok().body(response);
+//      } else {
+//        new Exception("Unauthorized access");
+//        return null;
+//      }
+    } catch (Exception e) {
+      log.info("** insert  => Exception "+e.getMessage());
+      ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
+          .error(e.getMessage())
+          .build();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+  }
+
+  // 아이디별 리스트 보기 - 사용자 권한
+  @GetMapping("/id")
+  public ResponseEntity<?> reviewIdList(@AuthenticationPrincipal String loginID, @RequestBody ReviewVO vo) {
+    try {
+      if (vo.getUserID().equals(loginID)) {
+        ReviewDTO<ReviewVO> response = ReviewDTO.<ReviewVO>builder()
+            .reviewList(service.idReviewList(loginID))
             .build();
         return ResponseEntity.ok().body(response);
       } else {
